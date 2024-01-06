@@ -18,26 +18,31 @@ const [contrasenia, setContrasenia] = useState('')
       style={styles.constraint}
       placeholder='Ingresar Nombre'
       onChangeText={(texto)=>setNombre(texto)}/>
-       <Text></Text>
+       <View style={{borderWidth:1, marginTop:10, width:300}}/>
 
       <TextInput
       style={styles.constraint}
       placeholder='Ingresar Apellido'
       onChangeText={(texto)=>setApellido(texto)}/>
-       <Text></Text>
+       <View style={{borderWidth:1, marginTop:10, width:300}}/>
 
        <TextInput
       style={styles.constraint}
       placeholder='Ingresar Correo'
       onChangeText={(texto)=>setCorreo(texto)}/>
-       <Text></Text>
+       <View style={{borderWidth:1, marginTop:10, width:300}}/>
 
        <TextInput
       style={styles.constraint}
       placeholder='Ingresar Contraseña'
       onChangeText={(texto)=>setContrasenia(texto)}/>
+<<<<<<< HEAD:screens/RegsitroScreen.tsx
        <Text></Text>
        </ImageBackground>
+=======
+       <View style={{borderWidth:1, marginTop:10, width:300}}/>
+    </View>
+>>>>>>> c194efc4550ca14b3b3ad4d1d7a03eb9c9718d8a:screens/RegistroScreen.tsx
   )
 }
 
