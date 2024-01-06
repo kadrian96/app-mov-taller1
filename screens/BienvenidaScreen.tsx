@@ -31,7 +31,7 @@ export default function BienvenidaScreen({navigation}: any) {
             <Text style={styles.textbutton}>Escarabajo 🪲</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Login')}>
-            <Text style={styles.textbutton}>R</Text>
+            <Text style={styles.textbutton}>Registrar</Text>
       </TouchableOpacity>
       
     </ImageBackground>
