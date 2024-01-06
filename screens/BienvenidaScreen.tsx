@@ -4,7 +4,7 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export default function BienvenidaScreen({navigation}: any) {
-  
+  const insecto=['hormiga','abeja','araña','cucaracha','escarabajo']
   return (
     <ImageBackground
     source={require('../assets/image/bienvenida.jpg')}
@@ -14,24 +14,24 @@ export default function BienvenidaScreen({navigation}: any) {
         <Text style={styles.titulo}>Bienvenido al juego</Text>
         <Text style={styles.subtitulo}>Escoje el insecto que quieres aplastar!!</Text>
 
-      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego')}>
+      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego',insecto[0])}>
             <Text style={styles.textbutton}>Hormiga 🐜</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego')}>
+      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego',insecto[1])}>
             <Text style={styles.textbutton}>Abeja 🐝</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego')}>
+      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego',insecto[2])}>
             <Text style={styles.textbutton}>Araña 🕷️</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego')}>
+      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego',insecto[3])}>
             <Text style={styles.textbutton}>Cucaracha 🪳</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego')}>
+      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego',insecto[4])}>
             <Text style={styles.textbutton}>Escarabajo 🪲</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Login')}>
-            <Text style={styles.textbutton}>Registrar</Text>
+            <Text style={styles.textbutton}>R</Text>
       </TouchableOpacity>
       
     </ImageBackground>
