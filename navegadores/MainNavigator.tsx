@@ -4,8 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import BienvenidaScreen from '../screens/BienvenidaScreen';
 import JuegoScreen from '../screens/JuegoScreen';
 import LoginScreen from '../screens/LoginScreen';
-import RegsitroScreen from '../screens/RegsitroScreen';
-
+import RegsitroScreen from '../screens/RegistroScreen';
 
 
 
