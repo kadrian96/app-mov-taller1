@@ -3,6 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from "@react-navigation/native";
 import BienvenidaScreen from '../screens/BienvenidaScreen';
 import JuegoScreen from '../screens/JuegoScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegsitroScreen from '../screens/RegsitroScreen';
 
 
 

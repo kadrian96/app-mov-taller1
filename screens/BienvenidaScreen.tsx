@@ -30,7 +30,9 @@ export default function BienvenidaScreen({navigation}: any) {
       <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Juego')}>
             <Text style={styles.textbutton}>Escarabajo 🪲</Text>
       </TouchableOpacity>
-
+      <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Login')}>
+            <Text style={styles.textbutton}>LOGIN</Text>
+      </TouchableOpacity>
       
     </ImageBackground>
    
