@@ -7,6 +7,7 @@ import JuegoScreen from '../screens/JuegoScreen';
 
 
 
+
 const Stack = createStackNavigator();
 
 
@@ -16,7 +17,9 @@ function MyStack() {
     return (
       <Stack.Navigator initialRouteName="Bienvenido">
         <Stack.Screen name="Bienvenido"component={BienvenidaScreen}/>
+        <Stack.Screen name="Login"component={LoginScreen}/>
         <Stack.Screen name="Juego"component={JuegoScreen}/>
+        <Stack.Screen name="Registro"component={RegsitroScreen}/>
       </Stack.Navigator>
     );
   }
