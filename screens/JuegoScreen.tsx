@@ -1,9 +1,26 @@
 import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export default function JuegoScreen({route}:any) {
     const insecto=route.params
-    console.log(insecto);
+    console.log(insecto)
+    function selectinsect(){
+        switch(insecto){
+            case 'hormiga':
+                return '🐜'
+            case 'abeja':
+                return '🐝'
+            case 'araña':
+                return '🕷️'
+            case 'cucaracha':
+                return '🪳'
+            case 'escarabajo':
+                return '🪲'
+
+        }
+    }
+    
   return (
     <ImageBackground 
     source={require('../assets/image/lodo.jpg')}
@@ -12,8 +29,11 @@ export default function JuegoScreen({route}:any) {
         <View  style={styles.textocontain}>
             <Text style={styles.texto}>Score:</Text>
             <Text style={styles.texto}>Tiempo:</Text>
-
+           
         </View>
+        <TouchableOpacity>
+                <Text style={styles.insecto}>{selectinsect()}</Text>
+            </TouchableOpacity>
 
 
     </ImageBackground>
@@ -41,10 +61,11 @@ const styles = StyleSheet.create({
         fontSize:20,
         color:'#E52B50',
         fontWeight:'bold'
-
-
-
         
+    },
+    insecto:{
+        fontSize:40
     }
+
 
 })
