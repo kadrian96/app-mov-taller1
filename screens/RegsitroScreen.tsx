@@ -11,7 +11,9 @@ const [contrasenia, setContrasenia] = useState('')
 
 
   return (
-    <View>
+    <ImageBackground source={require('../assets/image/bienvenida.jpg')}
+    style={styles.container} >
+      <Text style={styles.titulo}>REGISTRARSE</Text>
          <TextInput
       style={styles.constraint}
       placeholder='Ingresar Nombre'
@@ -35,7 +37,7 @@ const [contrasenia, setContrasenia] = useState('')
       placeholder='Ingresar Contraseña'
       onChangeText={(texto)=>setContrasenia(texto)}/>
        <Text></Text>
-    </View>
+       </ImageBackground>
   )
 }
 
@@ -46,4 +48,17 @@ const styles = StyleSheet.create({
         color: 'white',
         backgroundColor:'#F3E5AB'
     },
+    container:{
+      flex:1,
+      resizeMode:'cover',
+      alignItems:'center'
+  },
+  titulo: {
+    marginTop: 90,
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#C41E3A",
+    textAlign:'center'
+  },
+
 })

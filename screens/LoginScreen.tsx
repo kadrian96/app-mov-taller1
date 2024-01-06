@@ -13,6 +13,7 @@ export default function LoginScreen({navigation}:any) {
     source={require('../assets/image/bienvenida.jpg')}
     style={styles.container}
     >
+        <Text style={styles.titulo}> INGRESAR AL JUEGO</Text>
       <TextInput
       style={styles.constraint}
       placeholder='Ingresar Correo'
@@ -60,6 +61,13 @@ const styles = StyleSheet.create({
         color:'white',
         fontWeight:'bold'
 
-    }
+    },
+    titulo: {
+        marginTop: 90,
+        fontSize: 30,
+        fontWeight: "bold",
+        color: "#C41E3A",
+        textAlign:'center'
+      },
 
 })
