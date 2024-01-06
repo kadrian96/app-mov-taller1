@@ -36,13 +36,9 @@ const [contrasenia, setContrasenia] = useState('')
       style={styles.constraint}
       placeholder='Ingresar Contraseña'
       onChangeText={(texto)=>setContrasenia(texto)}/>
-<<<<<<< HEAD:screens/RegsitroScreen.tsx
-       <Text></Text>
-       </ImageBackground>
-=======
        <View style={{borderWidth:1, marginTop:10, width:300}}/>
-    </View>
->>>>>>> c194efc4550ca14b3b3ad4d1d7a03eb9c9718d8a:screens/RegistroScreen.tsx
+    
+    </ImageBackground>
   )
 }
 
