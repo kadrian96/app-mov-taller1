@@ -25,7 +25,7 @@ export default function LoginScreen({navigation}:any) {
        <Text></Text>
        
        <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Registro')}>
-            <Text style={styles.textbutton}>LOGIN</Text>
+            <Text style={styles.textbutton}>REGISTRAR</Text>
       </TouchableOpacity>
        </ImageBackground>
   )
