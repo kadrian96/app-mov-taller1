@@ -1,12 +1,28 @@
 import { Button, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../config/Config';
+
 
 export default function LoginScreen({navigation}:any) {
     const [correo, setCorreo] = useState('')
     const [contrasenia, setContrasenia] = useState('')
 
-   
+   function login(){
+    signInWithEmailAndPassword(auth, correo, contrasenia)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    navigation.navigate('LoginScreen')
+    // ...
+  })
+  .catch((error) => {
+    console.log('acceso denegado');
+    
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+   }
 
   return (
     <ImageBackground
@@ -17,14 +33,18 @@ export default function LoginScreen({navigation}:any) {
       <TextInput
       style={styles.constraint}
       placeholder='Ingresar Correo'
-      onChangeText={(texto)=>setCorreo(texto)}/>
+      onChangeText={(texto)=>setCorreo(texto)}
+     keyboardType='email-address'
+      autoCapitalize='none'/>
        <Text></Text>
        <TextInput
       style={styles.constraint}
       placeholder='Ingresar Contraseña'
       onChangeText={(texto)=>setContrasenia(texto)}/>
        <Text></Text>
-       
+       <TouchableOpacity style={styles.btn} onPress={()=>login()}>
+            <Text style={styles.textbutton}>INGRESAR</Text>
+      </TouchableOpacity>
        <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Registro')}>
             <Text style={styles.textbutton}>REGISTRAR</Text>
       </TouchableOpacity>
