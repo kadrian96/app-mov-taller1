@@ -1,8 +1,11 @@
-import { Alert, Button, ImageBackground, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Image, Button, ImageBackground, TouchableOpacity,  StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, set } from 'firebase/database';
 import { auth, db } from '../config/Config';
+import * as ImagePicker from "expo-image-picker";
+import { getStorage, ref as reff, uploadBytes } from "firebase/storage";
+import { storage } from "../config/Config";
 
 export default function RegistroScreen({ navigation }: any) {
 
@@ -12,8 +15,45 @@ export default function RegistroScreen({ navigation }: any) {
   const [contrasenia, setContrasenia] = useState('');
   const [nick, setNick] = useState('');
   const [edad, setEdad] = useState('');
+  const [imagen, setImagen] = useState(" ");
 
-  function RegistroSave() {
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+  
+    console.log(result);
+  
+    if (!result.canceled) {
+      setImagen(result.assets[0].uri);
+      console.log(imagen)
+    }
+  };
+
+  async  function RegistroSave() {
+
+    const storageRef = reff(storage, "usuarios/" + nick); //se puede coloccar una carpeta para subir el archivo
+    try {
+      //toman la imagen y la transforman en formato binario
+      const response = await fetch(imagen);
+      const blob = await response.blob();
+      await uploadBytes(storageRef, blob, {
+        contentType: "image/jpg",
+      });
+      console.log("La imagen se subió con éxito");
+
+      if (!correo || !nick || !contrasenia) {
+        Alert.alert("Error de Validación ", 'Por favor verifique los campos que no pueden estar vacios.');
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }  
+  
     createUserWithEmailAndPassword(auth, correo, contrasenia)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -65,6 +105,20 @@ export default function RegistroScreen({ navigation }: any) {
     <ImageBackground source={require('../assets/image/bienvenida.jpg')}
       style={styles.container}>
       <Text style={styles.titulo}>REGISTRARSE</Text>
+
+      <TouchableOpacity onPress={pickImage} style={styles.boton}>
+        <Text style={styles.textoBoton}>Seleccionar desde la Galería</Text>
+      </TouchableOpacity>
+
+
+
+      {imagen && (
+        <View>
+          <Image source={{ uri: imagen }} style={styles.imagen} />        
+        </View>
+      )}
+
+
       <TextInput
         style={styles.constraint}
         placeholder='Ingresar Nombre'
@@ -126,5 +180,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#C41E3A",
     textAlign: 'center'
+  },
+  boton: {
+    backgroundColor: '#C41E3A',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  textoBoton: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  imagen: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    marginTop: 20,
   },
 });
