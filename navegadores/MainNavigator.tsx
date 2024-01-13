@@ -21,7 +21,7 @@ function MyStack() {
     
         <Stack.Screen name="Bienvenido"component={BienvenidaScreen} options={{headerShown:false}}/>
         <Stack.Screen name="Login"component={LoginScreen} options={{headerShown:false}}/>
-        <Stack.Screen name="Juego"component={JuegoScreen} options={{headerShown:false}}/>
+        <Stack.Screen name="Juego"component={JuegoScreen} />
         <Stack.Screen name="Registro"component={RegsitroScreen}options={{headerShown:false}}/>
       </Stack.Navigator>
     );
