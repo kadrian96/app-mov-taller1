@@ -63,7 +63,7 @@ export default function RegistroScreen({ navigation }: any) {
         guardar(nombre, apellido, correo, nick, edad);
 
         // Navegando a la pantalla de bienvenida
-        navigation.navigate('Bienvenido');
+        navigation.navigate('My_Bottomtab');
       })
       .catch((error) => {
         const errorCode = error.code;
