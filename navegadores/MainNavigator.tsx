@@ -38,6 +38,7 @@ function MyStack() {
       />
 
       <Stack.Screen name="My_Bottomtab" component={MyTabs} options={{ headerShown: false }} />
+      
     </Stack.Navigator>
   );
 }
