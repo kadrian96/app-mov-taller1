@@ -1,11 +1,23 @@
-import { ImageBackground } from 'react-native'
+import { Image, ImageBackground, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { getDatabase, onValue, ref, remove, set, update } from 'firebase/database';
+import { getAuth, signOut } from "firebase/auth";
+import { getDatabase, onValue, ref, remove, set, update  } from 'firebase/database';
 import { Alert, Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { db } from '../config/Config';
 
-export default function PerfilScreen() {
+export default function PerfilScreen({navigation}:any) {
   const [datos, setDatos] = useState([]);
+
+  function salir(){
+ 
+
+    const auth = getAuth();
+    signOut(auth).then(() => {
+     navigation.navigate('Welcome')
+    }).catch((error) => {
+      // An error happened.
+    });
+    }
 
   
    // LEER LOS DATOS
@@ -48,6 +60,13 @@ correo:string}
             <Text>Ciudad: {item.apellido}</Text>
             <Text>Nombre: {item.edad}</Text>
             <Text>Ciudad: {item.correo}</Text>
+            <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Login')}>
+            <Text style={styles.textbutton}>PUSH</Text>
+            <Image
+            style={styles.img2}
+            source={require('../assets/image/salida.png')}
+            />
+      </TouchableOpacity>
           </View>
         )}
       />
@@ -60,6 +79,31 @@ const styles = StyleSheet.create({
     flex:1,
     resizeMode:'cover',
     alignItems:'center'
+},
+img2:{
+
+  flex: 1,
+  alignItems: 'center',
+  padding: 10,
+  marginBottom: 20,
+
+},
+textbutton:{
+  fontSize:15,
+  color:'red',
+  fontWeight:'bold',
+  
+
+},
+btn:{
+    
+  width: 105,
+  height: 130,
+ alignItems: 'center',
+  justifyContent: 'flex-start', 
+  marginTop: 500, 
+  paddingTop: 8,
+  borderRadius: 5,
 },
 
 })

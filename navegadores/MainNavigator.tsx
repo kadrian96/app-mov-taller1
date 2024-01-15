@@ -6,6 +6,7 @@ import JuegoScreen from '../screens/JuegoScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegsitroScreen from '../screens/RegistroScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import PerfilScreen from '../screens/PerfilScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ function MyStack() {
         <Stack.Screen name="Login"component={LoginScreen} options={{headerShown:false}}/>
         <Stack.Screen name="Juego"component={JuegoScreen} />
         <Stack.Screen name="Registro"component={RegsitroScreen}options={{headerShown:false}}/>
+        <Stack.Screen name="Perfil"component={PerfilScreen}options={{headerShown:false}}/>
       </Stack.Navigator>
     );
   }
