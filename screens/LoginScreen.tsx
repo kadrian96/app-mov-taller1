@@ -34,7 +34,7 @@ export default function LoginScreen({navigation}:any) {
       style={styles.constraint}
       placeholder='Ingresar Correo'
       onChangeText={(texto)=>setCorreo(texto)}
-     keyboardType='email-address'
+      keyboardType='email-address'
       autoCapitalize='none'/>
        <Text></Text>
        <TextInput
@@ -55,8 +55,9 @@ export default function LoginScreen({navigation}:any) {
 const styles = StyleSheet.create({
     constraint: {
         padding: 10,
-        marginTop: 25,
-        color: 'white',
+        marginTop: 30,
+        alignItems:'center',
+        color: 'black',
         backgroundColor:'#F3E5AB'
     },
     container:{
