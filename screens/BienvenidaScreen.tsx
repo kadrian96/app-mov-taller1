@@ -2,6 +2,7 @@
 import { Button, ImageBackground, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function BienvenidaScreen({navigation}: any) {
   //const insecto=['hormiga','abeja','araña','cucaracha','escarabajo']
@@ -52,6 +53,11 @@ export default function BienvenidaScreen({navigation}: any) {
       <TouchableOpacity style={styles.btn} onPress={()=> (setlevelview(true),setinsecto("escarabajo"))}>
             <Text style={styles.textbutton}>Escarabajo 🪲</Text>
       </TouchableOpacity>
+
+      
+
+
+
       
       {levelview && (
           <Modal animationType="slide" transparent={true}>
@@ -165,5 +171,6 @@ const styles = StyleSheet.create({
       textAlign:'center',
       marginBottom:20
     },
+  
 
 })
