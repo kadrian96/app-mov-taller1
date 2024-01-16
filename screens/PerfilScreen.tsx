@@ -8,7 +8,7 @@ export default function PerfilScreen({ navigation }: any) {
   const [datos, setDatos] = useState([]);
   const [usuario, setUsuario] = useState(null)
 
-  // LEER LOS DATOs
+  // LEER LOS DATOS
   useEffect(() => {
     const leer = () => {
       const starCountRef = ref(db, 'usuarios/');
@@ -65,7 +65,7 @@ export default function PerfilScreen({ navigation }: any) {
             <Text>Correo: {item.correo}</Text>
             <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Login')}>
               <Text style={styles.textButton}>PUSH</Text>
-              <Image style={styles.img} source={require('../assets/image/salida.png')} />
+              <Image style={styles.img} source={require('../assets/image/cerrar-sesion.png')} />
             </TouchableOpacity>
           </View>
         )}
@@ -107,5 +107,14 @@ img: {
     marginTop: 20, // Ajustar según sea necesario
     paddingTop: 8,
     borderRadius: 5,
+  },
+    input: {
+      width: '80%',
+      borderWidth: 1,
+      height: 45,
+      marginBottom: 10,
+      borderRadius: 10,
+      padding: 10,
+      //backgroundColor: '#eee',
   },
 });

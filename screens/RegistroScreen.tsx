@@ -1,4 +1,4 @@
-import { Alert, Image, Button, ImageBackground, TouchableOpacity,  StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Image, Button, ImageBackground, TouchableOpacity, StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, set } from 'firebase/database';
@@ -6,6 +6,9 @@ import { auth, db } from '../config/Config';
 import * as ImagePicker from "expo-image-picker";
 import { getStorage, ref as reff, uploadBytes } from "firebase/storage";
 import { storage } from "../config/Config";
+import LoginScreen from './LoginScreen';
+
+
 
 export default function RegistroScreen({ navigation }: any) {
 
@@ -25,16 +28,16 @@ export default function RegistroScreen({ navigation }: any) {
       aspect: [1, 1],
       quality: 1,
     });
-  
+
     console.log(result);
-  
+
     if (!result.canceled) {
       setImagen(result.assets[0].uri);
       console.log(imagen)
     }
   };
 
-  async  function RegistroSave() {
+  async function RegistroSave() {
 
     const storageRef = reff(storage, "usuarios/" + nick); //se puede coloccar una carpeta para subir el archivo
     try {
@@ -52,8 +55,8 @@ export default function RegistroScreen({ navigation }: any) {
       }
     } catch (error) {
       console.error(error);
-    }  
-  
+    }
+
     createUserWithEmailAndPassword(auth, correo, contrasenia)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -96,6 +99,12 @@ export default function RegistroScreen({ navigation }: any) {
     }).then(() => {
       Alert.alert('Mensaje', 'Datos Guardados');
     }).catch((error) => {
+     
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(error.menssage);
+      
+      
       console.error('Error al guardar en la base de datos:', error);
       Alert.alert('Error', 'Hubo un problema al guardar los datos');
     });
@@ -114,49 +123,51 @@ export default function RegistroScreen({ navigation }: any) {
 
       {imagen && (
         <View>
-          <Image source={{ uri: imagen }} style={styles.imagen} />        
+          <Image source={{ uri: imagen }} style={styles.imagen} />
         </View>
       )}
 
 
       <TextInput
-        style={styles.constraint}
+        style={styles.input}
         placeholder='Ingresar Nombre'
         onChangeText={(texto) => setNombre(texto)} />
-      <View style={{ borderWidth: 1, marginTop: 10, width: 300 }} />
+
 
       <TextInput
-      style={styles.constraint}
-      placeholder='Ingresar Apellido'
-      onChangeText={(texto)=>setApellido(texto)}/>
-       <View style={{borderWidth:1, marginTop:10, width:300}}/>
-       <TextInput
-      style={styles.constraint}
-      placeholder='Ingrese el NiCk'
-      onChangeText={(texto)=>setNick(texto)}/>
-       <View style={{borderWidth:1, marginTop:10, width:300}}/>
-       <TextInput
-      style={styles.constraint}
-      placeholder='Ingresar La Edad'
-      onChangeText={(texto)=>setEdad(texto)}/>
-       <View style={{borderWidth:1, marginTop:10, width:300}}/>
+        style={styles.input}
+        placeholder='Ingresar Apellido'
+        onChangeText={(texto) => setApellido(texto)} />
 
-       <TextInput
-      style={styles.constraint}
-      placeholder='Ingresar Correo'
-      keyboardType='email-address'
-      onChangeText={(texto)=>setCorreo(texto)}/>
-       <View style={{borderWidth:1, marginTop:10, width:300}}/>
-       
+      <TextInput
+        style={styles.input}
+        placeholder='Ingrese el NiCk'
+        onChangeText={(texto) => setNick(texto)} />
 
-       <TextInput
-      style={styles.constraint}
-      placeholder='Ingresar Contraseña'
-      secureTextEntry
-      onChangeText={(texto)=>setContrasenia(texto)}/>
-       <View style={{borderWidth:1, marginTop:10, width:300}}/>
+      <TextInput
+        style={styles.input}
+        placeholder='Ingresar La Edad'
+        onChangeText={(texto) => setEdad(texto)} />
 
-      <Button title='Registrarse' onPress={() => RegistroSave()} color='green' />
+
+      <TextInput
+        style={styles.input}
+        placeholder='Ingresar Correo'
+        keyboardType='email-address'
+        onChangeText={(texto) => setCorreo(texto)} />
+
+
+
+      <TextInput
+        style={styles.input}
+        placeholder='Ingresar Contraseña'
+        //secureTextEntry
+        onChangeText={(texto) => setContrasenia(texto)} />
+
+
+      <Button title='Registrarse' onPress={() => RegistroSave()} color='rgb(89,166,98)' />
+      <Text></Text>
+      <Button title='Regresar' onPress={() => navigation.navigate('Login')} color='#db4437' />
 
     </ImageBackground>
   );
@@ -178,11 +189,11 @@ const styles = StyleSheet.create({
     marginTop: 90,
     fontSize: 30,
     fontWeight: "bold",
-    color: "#C41E3A",
+    color: "#C41E",
     textAlign: 'center'
   },
   boton: {
-    backgroundColor: '#C41E3A',
+    backgroundColor: '#C41E',
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
@@ -197,5 +208,14 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 10,
     marginTop: 20,
+  },
+  input: {
+    width: '80%',
+    borderWidth: 1,
+    height: 45,
+    marginBottom: 10,
+    borderRadius: 15,
+    padding: 15,
+    //backgroundColor: '#eee',
   },
 });

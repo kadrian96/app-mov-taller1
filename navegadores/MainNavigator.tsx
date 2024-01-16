@@ -1,14 +1,13 @@
 import { createStackNavigator } from "@react-navigation/stack";
-
-import { NavigationContainer } from "@react-navigation/native";
-import BienvenidaScreen from "../screens/BienvenidaScreen";
-import JuegoScreen from "../screens/JuegoScreen";
-import LoginScreen from "../screens/LoginScreen";
-import WelcomeScreen from "../screens/WelcomeScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import PerfilScreen from "../screens/PerfilScreen";
 import { Icon } from "@rneui/themed";
-import RegistroScreen from "../screens/RegistroScreen";
+import { NavigationContainer } from "@react-navigation/native";
+import BienvenidaScreen from '../screens/BienvenidaScreen';
+import JuegoScreen from '../screens/JuegoScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegistroScreen from '../screens/RegistroScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
+import PerfilScreen from '../screens/PerfilScreen';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Stack = createStackNavigator();
 
@@ -20,6 +19,7 @@ function MyStack() {
         component={WelcomeScreen}
         options={{ headerShown: false }}
       />
+      
 
       <Stack.Screen
         name="Juego"
