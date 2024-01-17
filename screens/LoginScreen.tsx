@@ -22,26 +22,36 @@ export default function LoginScreen({navigation}:any) {
     const errorCode = error.code;
     const errorMessage = error.message;
   });
+
+  // LIMPIAR DATOS
+  setCorreo("")
+  setContrasenia("")
+
    }
 
   return (
+    
     <ImageBackground
     source={require('../assets/image/bienvenida.jpg')}
     style={styles.container}
     >
         <Text style={styles.titulo}> INGRESAR AL JUEGO</Text>
       <TextInput
-      style={styles.constraint}
+      style={styles.input}
       placeholder='Ingresar Correo'
       onChangeText={(texto)=>setCorreo(texto)}
-     keyboardType='email-address'
-      autoCapitalize='none'/>
-       <Text></Text>
+            keyboardType='email-address'
+      autoCapitalize='none'
+      value={correo}
+      />
+     
        <TextInput
-      style={styles.constraint}
+      style={styles.input}
       placeholder='Ingresar Contraseña'
-      onChangeText={(texto)=>setContrasenia(texto)}/>
-       <Text></Text>
+      onChangeText={(texto)=>setContrasenia(texto)}
+      value={contrasenia}
+      />
+       
        <TouchableOpacity style={styles.btn} onPress={()=>login()}>
             <Text style={styles.textbutton}>INGRESAR</Text>
       </TouchableOpacity>
@@ -55,8 +65,9 @@ export default function LoginScreen({navigation}:any) {
 const styles = StyleSheet.create({
     constraint: {
         padding: 10,
-        marginTop: 25,
-        color: 'white',
+        marginTop: 30,
+        alignItems:'center',
+        color: 'black',
         backgroundColor:'#F3E5AB'
     },
     container:{
@@ -71,7 +82,7 @@ const styles = StyleSheet.create({
        alignItems:'center',
        verticalAlign:'center',
       marginVertical:20,
-       backgroundColor:'#56A0D3',
+       backgroundColor:'rgb(89,166,98)',
        paddingTop:5,
        
        borderRadius:5
@@ -83,11 +94,24 @@ const styles = StyleSheet.create({
 
     },
     titulo: {
-        marginTop: 90,
+        marginTop: 100,
+        flex: 0.8,
         fontSize: 30,
         fontWeight: "bold",
-        color: "#C41E3A",
+        color: "#db4437",
         textAlign:'center'
+      },
+      input: {
+        width: '80%',
+        
+        borderWidth: 2,
+        height: 45,
+        marginBottom: 5,
+        borderRadius: 10,
+        padding: 10,
+        marginTop: 10,
+        fontSize: 23,
+        //backgroundColor: '#eee',
       },
 
 })
