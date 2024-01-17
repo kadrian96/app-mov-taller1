@@ -279,7 +279,7 @@ const bloodimg = require('../assets/image/bloodsplash.png');
                     <Pressable style={styles.btnreinicio} onPress={() => (RestartGame())}>
                         <Text style={styles.textbtn}>Reiniciar</Text>
                     </Pressable>
-                    <Pressable style={styles.btnsalir} onPress={() => (navigation.navigate('Bienvenido'))} >
+                    <Pressable style={styles.btnsalir} onPress={() => (navigation.navigate('Bienvenida'))} >
                         <Text style={styles.textbtn}>Salir</Text>
                     </Pressable> 
                     

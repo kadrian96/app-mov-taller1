@@ -1,25 +1,69 @@
-import { ImageBackground } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { getDatabase, onValue, ref, remove, set, update } from 'firebase/database';
-import { Alert, Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
-import { db } from '../config/Config';
+import { Image, ImageBackground, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  getDatabase,
+  onValue,
+  ref,
+  remove,
+  set,
+  update,
+} from "firebase/database";
+import {
+  Alert,
+  Button,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+//FIREBASE
+import { getAuth, signOut } from "firebase/auth";
+import { auth, db } from "../config/Config";
 
-export default function PerfilScreen() {
-  const [datos, setDatos] = useState([]);
+export default function PerfilScreen( {navigation}:any ) {
+  const [datos, setDatos] = useState<any>({
+    name:"",
+    lastName:"",
+    nick:"",
+    age:"",
+    email:""
+    });
+  const [email, setemail] = useState("");
+  const [userimg, setuserimg] = useState("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg");
 
-  
-   // LEER LOS DATOS
-   useEffect(() => {
+  type usuario = {
+    name: string;
+    lastName: string;
+    nick: string;
+    age: string;
+    email: string;
+  };
+
+  useEffect(() => {
+    
+    usuarioActual();
+
+    // LEER LOS DATOS
     const leer = () => {
-      const starCountRef = ref(db, 'usuarios/');
+      const starCountRef = ref(db, "usuarios/");
       onValue(starCountRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-          const dataTemp : any = Object.keys(data).map((key) => ({
-            key,
-            ...data[key],
+          const dataTemp: any = Object.keys(data).map((nick) => ({
+            nick,
+            ...data[nick],
           }));
-          setDatos(dataTemp);
+          //Asigno el valor del objeto con el que coincida con el usuario actual
+          console.log(dataTemp);
+          const usuarioEncontrado: usuario = dataTemp.find(
+            (objeto: usuario) => objeto.email === email
+          );
+          if(usuarioEncontrado){
+            setDatos(usuarioEncontrado);
+          }
+           
+          console.log(datos);
         }
       });
     };
@@ -27,39 +71,96 @@ export default function PerfilScreen() {
     leer();
   }, []);
 
-  type usuario={
-nombre:string,
-apellido:string,
-nick:string,
-edad:string,
-correo:string}
-  
+  function usuarioActual() {
+    const user = auth.currentUser;
+    if (user !== null) {
+      // The user object has basic properties such as display name, email, etc.
+      const email: any = user.email;
+      const photoURL: any = user.photoURL;
+      setemail(email);
+      setuserimg(photoURL);
+      console.log(email);
+      console.log(userimg);
+    }
+  }
+
+  function cerrarSesion() {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        Alert.alert("Mensaje","Se cerro la sesion")
+        navigation.navigate('Welcome')
+
+      })
+      .catch((error) => {
+        // An error happened.
+        Alert.alert(error.code,error.message)
+      });
+  }
+
   return (
-    <ImageBackground  source={require('../assets/image/bienvenida.jpg')}
-    style={styles.container}>
-     <View style={{ borderWidth: 1, width: '100%', marginTop: 10 }} />
-      <FlatList
-        data={datos}
-        renderItem={({ item }:{item:usuario }) => (
-          <View>
-            <View style={{ borderWidth: 1, width: '100%', marginTop: 10 }} />
-            <Text>Cedula: {item.nick}</Text>
-            <Text>Nombre: {item.nombre}</Text>
-            <Text>Ciudad: {item.apellido}</Text>
-            <Text>Nombre: {item.edad}</Text>
-            <Text>Ciudad: {item.correo}</Text>
-          </View>
-        )}
-      />
+    <ImageBackground
+      source={require("../assets/image/fondo-perfil.jpg")}
+      style={styles.container}
+    >
+      <Text style={styles.titulo}>Bienvenido a tu perfil</Text>
+      <View style={styles.circleContainer}>
+        <Image source={{ uri: userimg }} style={styles.profileImage} />
+      </View>
+      <Text>Nick: {datos.nick}</Text>
+      <Text>Nombre: {datos.name}</Text>
+      <Text>Apellido: {datos.lastName}</Text>
+      <Text>Edad: {datos.age}</Text>
+      <Text>correo: {datos.email}</Text>
+      <Pressable style={styles.btnsalir} onPress={()=>cerrarSesion()}>
+        <Text style={styles.textbtn}>Cerrar Sesion</Text>
+      </Pressable>
     </ImageBackground>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    resizeMode:'cover',
-    alignItems:'center'
-},
-
-})
+  container: {
+    flex: 1,
+    resizeMode: "cover",
+    alignItems: "center",
+  },
+  titulo: {
+    marginTop: 65,
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#C41E3A",
+    textAlign: "center",
+    marginBottom: 80,
+  },
+  circleContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+  },
+  profileImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    borderRadius: 50,
+  },
+  btnsalir: {
+    width: 120,
+    height: 50,
+    backgroundColor: "red",
+    marginTop: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+  },
+  textbtn: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+});

@@ -24,7 +24,6 @@ function MyStack() {
       <Stack.Screen
         name="Juego"
         component={JuegoScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Login"
@@ -38,7 +37,7 @@ function MyStack() {
       />
 
       <Stack.Screen name="My_Bottomtab" component={MyTabs} options={{ headerShown: false }} />
-      
+
     </Stack.Navigator>
   );
 }
