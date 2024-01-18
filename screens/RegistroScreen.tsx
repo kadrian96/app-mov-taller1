@@ -91,7 +91,7 @@ export default function RegistroScreen({ navigation }: any) {
       }
 
       // Navegando a la pantalla de bienvenida
-      navigation.navigate("My_Bottomtab");
+      navigation.navigate("Bienvenido");
 
     } catch (error: any) {
       const errorCode = error.code;
