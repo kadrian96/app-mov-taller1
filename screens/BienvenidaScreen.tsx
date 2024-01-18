@@ -65,14 +65,10 @@ export default function BienvenidaScreen({ navigation }: any) {
         <TouchableOpacity style={styles.btn} onPress={() => (setlevelview(true), setinsecto("escarabajo"))}>
           <Text style={styles.textbutton}>Escarabajo 🪲</Text>
         </TouchableOpacity>
-<<<<<<< HEAD
-       
-=======
       
         <Text></Text>
         <Text></Text>
-        <Button title='Regresar' onPress={() => navigation.navigate('Login')} color='#db4437' />
->>>>>>> 6688d440a1781301dedd54f45593a1311484ad2f
+        <Button title='Puntuaciones' onPress={() => navigation.navigate('Welcome')} color='#db4437' />
       </View>
       
 
