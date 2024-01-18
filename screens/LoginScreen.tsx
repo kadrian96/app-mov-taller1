@@ -13,7 +13,7 @@ export default function LoginScreen({navigation}:any) {
   .then((userCredential) => {
     // Signed in 
     const user = userCredential.user;
-    navigation.navigate('My_Bottomtab')
+    navigation.navigate('Bienvenido')
     // ...
   })
   .catch((error) => {

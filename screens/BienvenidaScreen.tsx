@@ -1,10 +1,11 @@
 
 import { Button, ImageBackground, Modal, Pressable, StyleSheet, Text, View, Image } from 'react-native';
 import React, { useEffect, useState } from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native';
-import { onValue, ref } from 'firebase/database';
-import { db } from '../config/Config';
+import { get, onValue, ref } from 'firebase/database';
+import { auth, db } from '../config/Config';
+import { onAuthStateChanged } from 'firebase/auth';
 
 
 export default function BienvenidaScreen({ navigation }: any) {
@@ -14,34 +15,76 @@ export default function BienvenidaScreen({ navigation }: any) {
   const [levelview, setlevelview] = useState(false);
   const [mapview, setmapview] = useState(false);
   const [scoreview, setscoreview] = useState(false);
-  const [datos, setdatos] = useState(false);
- 
-  //const [gameobject, setgameobject] = useState<any>({});
-  //navigation.navigate('Juego',insecto[0])
-
-  //LLER DATOS
-
+  const [toptenDatos, setToptenDatos] = useState([]);
+  const [logged, setlogged] = useState(false);
+  const [nick, setnick] = useState("");
   
+ 
+  
+  // OBTENER DATOS USUARIO
 
   useEffect(() => {
-    function leer() {
-      const starCountRef = ref(db, "products/");
-      onValue(starCountRef, (snapshot) => {
-        const data = snapshot.val();
-        // adaptacion del arreglo para que la clave este dentro del objeto
-        const dataTemp: any = Object.keys(data).map((id) => ({
-          id,
-          ...data[id],
-        }));
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const displayName:any = user.displayName;
+        setnick(displayName);
+        setlogged(true)
+        console.log("Este es el nick: ", nick)
+      } else {
+        // User is signed out
+        console.log("Usuario desconectado");
+        setlogged(false)
+      }
+    });
+  
+    return () => {
+      // Desuscribe la función cuando el componente se desmonta
+      unsubscribe();
+    };
+  }, []); 
+  
 
-        setdatos(dataTemp);
-      });
-    }
-    leer();
-    //console.log(products);
-  }, []);
 
   
+  
+  useEffect(() => {
+    // LEER DATOS
+    const leer = async () => {
+      try {
+        const starCountRef = ref(db, "puntuaciones/");
+
+        // Usamos onValue para suscribirnos a cambios en la base de datos
+        onValue(starCountRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const dataTemp: any = Object.keys(data).map((id) => ({
+              id,
+              ...data[id],
+            }));
+            //ordeno de mayor a menor
+            const sortedData:any = [...dataTemp].sort((a, b) => b.score - a.score);
+            //obtengo las 10 puntuaciones mas altas
+            const primerosDiezElementos = sortedData.slice(0, 10);
+            setToptenDatos(primerosDiezElementos);
+          } else {
+            console.error('No hay datos en la referencia.');
+          }
+        });
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+    
+
+    leer();
+  }, []); 
+
+  type puntuacion = {
+    id: any;
+    nick: string;
+    score: number;
+  };
+
   type infojuego = {
     name: string,
     dificult: string,
@@ -62,6 +105,25 @@ export default function BienvenidaScreen({ navigation }: any) {
     //setinsecto("");
     //setdificultad("");
   }
+
+  //render seprator
+  const renderSeparator = () => (
+    <View style={styles.separator} />
+  );
+
+    //FUNCION PARA LA EXCEPCION DE OFFLINE
+    function userisLogged(){
+      if(logged){
+        return navigation.navigate('Perfil');
+      }
+      else{
+        return navigation.navigate('Offline');
+      }
+    }
+
+  // Ordenar el array de objetos basado en la clave 'value'
+ 
+
   return (
     
     <ImageBackground
@@ -70,7 +132,7 @@ export default function BienvenidaScreen({ navigation }: any) {
   
     >
       <Text></Text>
-      <TouchableOpacity  onPress={() => navigation.navigate('Perfil')}>
+      <TouchableOpacity  onPress={() => userisLogged()}>
       <Text style={styles.textbutton1}>Perfil</Text>
           <Image style={styles.img2} source={require('../assets/image/perfil.png')} />
         </TouchableOpacity>
@@ -180,8 +242,19 @@ export default function BienvenidaScreen({ navigation }: any) {
         <Modal animationType="slide" transparent={true}>
           <View style={styles.centeredView}>
             <View style={styles.modalmapView}>
-              <Text style={styles.maptitle}>Puntuaciones:</Text>
-              <View >
+              <Text style={styles.maptitle}>Top 10 score:</Text>
+              <View style={styles.flat1}>
+              <FlatList
+                data={toptenDatos}
+          renderItem={({ item, index }: { item: puntuacion; index:number }) => (
+            <View style={{ marginTop: 15 ,flexDirection:'row'}}>
+              <Text style={styles.keytext}>{`${index + 1}. Nick:`}<Text style={styles.valuetext}> {item.nick}</Text> </Text>
+              <Text style={styles.keytext}>  Score:<Text style={styles.valuetext}> {+item.score}</Text> </Text>
+            </View>
+          )}
+          ItemSeparatorComponent={renderSeparator}
+          style={styles.lista}
+        />
 
 
                 <Button title='Volver' onPress={() => setscoreview(false)} />
@@ -344,6 +417,34 @@ const styles = StyleSheet.create({
     top:20,
     left:320
 
+  },
+  separator: {
+    height: 1,
+    backgroundColor: 'gray',
+    marginTop:5
+  },
+  keytext:{
+    color:'#00AB66',
+    fontWeight:'bold',
+    fontStyle:'italic'
+
+  },
+  valuetext:{
+    color:'black',
+    fontWeight:'normal',
+    fontStyle:'normal'
+  },
+  lista:{
+    //backgroundColor: '#C5CBE1',
+    padding: 10,
+    margin: 10,
+    borderRadius: 5,
+
+  },
+  flat1:{
+    height:500,
+    //width:250
+    
   },
 
 

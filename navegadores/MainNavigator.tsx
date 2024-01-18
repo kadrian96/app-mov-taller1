@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import PerfilScreen from "../screens/PerfilScreen";
 import { Icon } from "@rneui/themed";
 import RegistroScreen from "../screens/RegistroScreen";
+import OfflineScreen from "../screens/OfflineScreen";
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,11 @@ function MyStack() {
       <Stack.Screen
         name="Perfil"
         component={PerfilScreen}
+       
+      />
+      <Stack.Screen
+        name="Offline"
+        component={OfflineScreen}
        
       />
 
