@@ -18,7 +18,7 @@ import {
   View,
 } from "react-native";
 //FIREBASE
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "../config/Config";
 
 export default function PerfilScreen( {navigation}:any ) {
@@ -31,6 +31,7 @@ export default function PerfilScreen( {navigation}:any ) {
     });
   const [email, setemail] = useState("");
   const [userimg, setuserimg] = useState("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg");
+  const [nick, setnick] = useState("")
 
   type usuario = {
     name: string;
@@ -39,37 +40,62 @@ export default function PerfilScreen( {navigation}:any ) {
     age: string;
     email: string;
   };
+  // onAuthStateChanged(auth, (user) => {
+  //   if (user) {
+  //     // User is signed in, see docs for a list of available properties
+  //     // https://firebase.google.com/docs/reference/js/auth.user
+  //     const displayName:any = user.displayName
+  //     console.log(displayName)
+  //     setnick(displayName)
+  //     // ...
+  //   } else {
+  //     // User is signed out
+  //     // ...
+  //   }
+  // });
 
   useEffect(() => {
     
     usuarioActual();
 
-    // LEER LOS DATOS
-    const leer = () => {
-      const starCountRef = ref(db, "usuarios/");
-      onValue(starCountRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          const dataTemp: any = Object.keys(data).map((nick) => ({
-            nick,
-            ...data[nick],
-          }));
-          //Asigno el valor del objeto con el que coincida con el usuario actual
-          console.log(dataTemp);
-          const usuarioEncontrado: usuario = dataTemp.find(
-            (objeto: usuario) => objeto.email === email
-          );
-          if(usuarioEncontrado){
-            setDatos(usuarioEncontrado);
-          }
-           
-          console.log(datos);
-        }
-      });
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const displayName:any = user.displayName;
+        //console.log("Este es el nick: ", displayName);
+        setnick(displayName);
+  
+        const starCountRef = ref(db, 'usuarios/' + nick);
+        onValue(starCountRef, (snapshot) => {
+          const data = snapshot.val();
+          setDatos(data);
+          //console.log("Datos del usuario:", data);
+        });
+      } else {
+        // User is signed out
+        console.log("Usuario desconectado");
+      }
+    });
+  
+    return () => {
+      // Desuscribe la función cuando el componente se desmonta
+      unsubscribe();
     };
 
-    leer();
-  }, []);
+
+
+  //   // LEER LOS DATOS
+  //   function leer(){
+  //     const starCountRef = ref(db, 'usuarios/' +nick);  //postID la clave para leer un elemento en especifico
+  //     onValue(starCountRef, (snapshot) => {
+  //     const data = snapshot.val();
+  //     setDatos(data)
+  //     console.log(datos)
+  // });
+    
+  //    }
+
+    //leer();
+  }, [datos]);
 
   function usuarioActual() {
     const user = auth.currentUser;
@@ -77,10 +103,10 @@ export default function PerfilScreen( {navigation}:any ) {
       // The user object has basic properties such as display name, email, etc.
       const email: any = user.email;
       const photoURL: any = user.photoURL;
-      setemail(email);
+      //setemail(email);
       setuserimg(photoURL);
-      console.log(email);
-      console.log(userimg);
+      //console.log(email);
+      //console.log(userimg);
     }
   }
 
@@ -108,7 +134,7 @@ export default function PerfilScreen( {navigation}:any ) {
       <View style={styles.circleContainer}>
         <Image source={{ uri: userimg }} style={styles.profileImage} />
       </View>
-      <Text>Nick: {datos.nick}</Text>
+      <Text>Nick: {nick}</Text>
       <Text>Nombre: {datos.name}</Text>
       <Text>Apellido: {datos.lastName}</Text>
       <Text>Edad: {datos.age}</Text>
