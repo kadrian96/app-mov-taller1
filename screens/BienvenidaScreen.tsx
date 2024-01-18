@@ -1,8 +1,10 @@
 
 import { Button, ImageBackground, Modal, Pressable, StyleSheet, Text, View, Image } from 'react-native';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native';
+import { onValue, ref } from 'firebase/database';
+import { db } from '../config/Config';
 
 
 export default function BienvenidaScreen({ navigation }: any) {
@@ -11,9 +13,35 @@ export default function BienvenidaScreen({ navigation }: any) {
   const [dificultad, setdificultad] = useState("");
   const [levelview, setlevelview] = useState(false);
   const [mapview, setmapview] = useState(false);
+  const [scoreview, setscoreview] = useState(false);
+  const [datos, setdatos] = useState(false);
  
   //const [gameobject, setgameobject] = useState<any>({});
   //navigation.navigate('Juego',insecto[0])
+
+  //LLER DATOS
+
+  
+
+  useEffect(() => {
+    function leer() {
+      const starCountRef = ref(db, "products/");
+      onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+        // adaptacion del arreglo para que la clave este dentro del objeto
+        const dataTemp: any = Object.keys(data).map((id) => ({
+          id,
+          ...data[id],
+        }));
+
+        setdatos(dataTemp);
+      });
+    }
+    leer();
+    //console.log(products);
+  }, []);
+
+  
   type infojuego = {
     name: string,
     dificult: string,
@@ -68,7 +96,7 @@ export default function BienvenidaScreen({ navigation }: any) {
       
         <Text></Text>
         <Text></Text>
-        <Button title='Puntuaciones' onPress={() => navigation.navigate('Welcome')} color='#db4437' />
+        <Button title='Puntuaciones' onPress={() => setscoreview(true)} color='#db4437' />
       </View>
       
 
@@ -144,6 +172,26 @@ export default function BienvenidaScreen({ navigation }: any) {
           </View>
         </Modal>
       )}
+
+
+      
+{scoreview && (
+        <Modal animationType="slide" transparent={true}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalmapView}>
+              <Text style={styles.maptitle}>Puntuaciones:</Text>
+              <View >
+
+
+                <Button title='Volver' onPress={() => setscoreview(false)} />
+
+              </View>
+
+            </View>
+          </View>
+        </Modal>
+      )}
+
 
     </ImageBackground>
 
