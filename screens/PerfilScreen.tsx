@@ -21,14 +21,14 @@ import {
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "../config/Config";
 
-export default function PerfilScreen( {navigation}:any ) {
+export default function PerfilScreen({ navigation }: any) {
   const [datos, setDatos] = useState<any>({
-    name:"",
-    lastName:"",
-    nick:"",
-    age:"",
-    email:""
-    });
+    name: "",
+    lastName: "",
+    nick: "",
+    age: "",
+    email: "",
+  });
   const [email, setemail] = useState("");
   const [userimg, setuserimg] = useState("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg");
   const [nick, setnick] = useState("")
@@ -56,16 +56,15 @@ export default function PerfilScreen( {navigation}:any ) {
   // });
 
   useEffect(() => {
-    
     usuarioActual();
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const displayName:any = user.displayName;
+        const displayName: any = user.displayName;
         //console.log("Este es el nick: ", displayName);
         setnick(displayName);
-  
-        const starCountRef = ref(db, 'usuarios/' + nick);
+
+        const starCountRef = ref(db, "usuarios/" + nick);
         onValue(starCountRef, (snapshot) => {
           const data = snapshot.val();
           setDatos(data);
@@ -78,24 +77,22 @@ export default function PerfilScreen( {navigation}:any ) {
         
       }
     });
-  
+
     return () => {
       // Desuscribe la función cuando el componente se desmonta
       unsubscribe();
     };
 
+    //   // LEER LOS DATOS
+    //   function leer(){
+    //     const starCountRef = ref(db, 'usuarios/' +nick);  //postID la clave para leer un elemento en especifico
+    //     onValue(starCountRef, (snapshot) => {
+    //     const data = snapshot.val();
+    //     setDatos(data)
+    //     console.log(datos)
+    // });
 
-
-  //   // LEER LOS DATOS
-  //   function leer(){
-  //     const starCountRef = ref(db, 'usuarios/' +nick);  //postID la clave para leer un elemento en especifico
-  //     onValue(starCountRef, (snapshot) => {
-  //     const data = snapshot.val();
-  //     setDatos(data)
-  //     console.log(datos)
-  // });
-    
-  //    }
+    //    }
 
     //leer();
   }, [datos]);
@@ -120,13 +117,12 @@ export default function PerfilScreen( {navigation}:any ) {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        Alert.alert("Mensaje","Se cerro la sesion")
-        navigation.navigate('Welcome')
-
+        Alert.alert("Mensaje", "Se cerro la sesion");
+        navigation.navigate("Welcome");
       })
       .catch((error) => {
         // An error happened.
-        Alert.alert(error.code,error.message)
+        Alert.alert(error.code, error.message);
       });
   }
 
@@ -144,7 +140,7 @@ export default function PerfilScreen( {navigation}:any ) {
       <Text>Apellido: {datos.lastName}</Text>
       <Text>Edad: {datos.age}</Text>
       <Text>correo: {datos.email}</Text>
-      <Pressable style={styles.btnsalir} onPress={()=>cerrarSesion()}>
+      <Pressable style={styles.btnsalir} onPress={() => cerrarSesion()}>
         <Text style={styles.textbtn}>Cerrar Sesion</Text>
       </Pressable>
      

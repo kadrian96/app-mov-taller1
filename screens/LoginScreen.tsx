@@ -69,8 +69,11 @@ export default function LoginScreen({navigation}:any) {
        <TouchableOpacity style={styles.btn} onPress={()=>login()}>
             <Text style={styles.textbutton}>INGRESAR</Text>
       </TouchableOpacity>
-       <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate('Registro')}>
+       <TouchableOpacity style={styles.btn1} onPress={()=> navigation.navigate('Registro')}>
             <Text style={styles.textbutton}>REGISTRAR</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.btn2} onPress={()=> navigation.navigate('Welcome')}>
+            <Text style={styles.textbutton}>REGRESAR</Text>
       </TouchableOpacity>
        </ImageBackground>
   )
@@ -101,6 +104,28 @@ const styles = StyleSheet.create({
        
        borderRadius:5
     },
+    btn1:{
+      width:150,
+      height:35,
+     alignItems:'center',
+     verticalAlign:'center',
+    marginVertical:20,
+     backgroundColor:'#B0BF1A',
+     paddingTop:5,
+     
+     borderRadius:5
+  },
+  btn2:{
+    width:150,
+    height:35,
+   alignItems:'center',
+   verticalAlign:'center',
+  marginVertical:20,
+   backgroundColor:'#841B2D',
+   paddingTop:5,
+   
+   borderRadius:5
+},
     textbutton:{
         fontSize:15,
         color:'white',

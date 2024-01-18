@@ -35,12 +35,18 @@ export default function BienvenidaScreen({ navigation }: any) {
     //setdificultad("");
   }
   return (
+    
     <ImageBackground
       source={require('../assets/image/bienvenida.jpg')}
       style={styles.container}
+  
     >
+      <TouchableOpacity  onPress={() => navigation.navigate('My_Bottomtab')}>
+      <Text style={styles.textbutton1}>Perfil</Text>
+          <Image style={styles.img2} source={require('../assets/image/perfil.png')} />
+        </TouchableOpacity>
 
-      <Text style={styles.titulo}>Bienvenido al juego</Text>
+      
       <Text style={styles.subtitulo}>Escoje el insecto que quieres aplastar!!</Text>
       <View>
         <TouchableOpacity style={styles.btn} onPress={() => (setlevelview(true), setinsecto("hormiga"))}>
@@ -59,9 +65,16 @@ export default function BienvenidaScreen({ navigation }: any) {
         <TouchableOpacity style={styles.btn} onPress={() => (setlevelview(true), setinsecto("escarabajo"))}>
           <Text style={styles.textbutton}>Escarabajo 🪲</Text>
         </TouchableOpacity>
+<<<<<<< HEAD
        
+=======
+      
+        <Text></Text>
+        <Text></Text>
+        <Button title='Regresar' onPress={() => navigation.navigate('Login')} color='#db4437' />
+>>>>>>> 6688d440a1781301dedd54f45593a1311484ad2f
       </View>
-
+      
 
 
       
@@ -258,6 +271,34 @@ const styles = StyleSheet.create({
     color: "#D2691E",
     textAlign: 'center',
     marginBottom: 10
+  },
+  img2: {
+    width: 30, // Ajusta el tamaño de la imagen según sea necesario
+    height: 30, // Ajusta el tamaño de la imagen según sea necesario
+    marginBottom: 10,
+    marginTop:20,
+    marginLeft:325
+   
+  },
+  btn2: {
+   // position:'absolute',
+  top: 50,
+  left: 150,
+  zIndex: 1, // Asegura que el btn2 esté en la capa superior
+  width: 150,
+  height: 150,
+  alignItems: 'center',
+  justifyContent: 'center', // Centra el texto verticalmente
+  backgroundColor: 'rgb(89,166,98)',
+  borderRadius: 500,
+  },
+  textbutton1: {
+    fontSize: 15,
+    color: 'white',
+    fontWeight: 'bold',
+    top:20,
+    left:320
+
   },
 
 
