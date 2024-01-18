@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Pressable } from "react-native";
+import { Image, ImageBackground, Modal, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
   getDatabase,
@@ -32,6 +32,7 @@ export default function PerfilScreen( {navigation}:any ) {
   const [email, setemail] = useState("");
   const [userimg, setuserimg] = useState("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg");
   const [nick, setnick] = useState("")
+  
 
   type usuario = {
     name: string;
@@ -71,8 +72,10 @@ export default function PerfilScreen( {navigation}:any ) {
           //console.log("Datos del usuario:", data);
         });
       } else {
+       
         // User is signed out
         console.log("Usuario desconectado");
+        
       }
     });
   
@@ -100,6 +103,7 @@ export default function PerfilScreen( {navigation}:any ) {
   function usuarioActual() {
     const user = auth.currentUser;
     if (user !== null) {
+      
       // The user object has basic properties such as display name, email, etc.
       const email: any = user.email;
       const photoURL: any = user.photoURL;
@@ -108,6 +112,7 @@ export default function PerfilScreen( {navigation}:any ) {
       //console.log(email);
       //console.log(userimg);
     }
+   
   }
 
   function cerrarSesion() {
@@ -142,6 +147,7 @@ export default function PerfilScreen( {navigation}:any ) {
       <Pressable style={styles.btnsalir} onPress={()=>cerrarSesion()}>
         <Text style={styles.textbtn}>Cerrar Sesion</Text>
       </Pressable>
+     
     </ImageBackground>
   );
 }
@@ -189,4 +195,76 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 15,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    height:500,
+    width:300,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+    //justifyContent:'center'
+  },
+  gameovertxt:{
+    color:'red',
+    marginVertical:10,
+    fontSize:25,
+    fontWeight:'bold'
+  },
+  puntuaciontxt:{
+    color:'blue',
+    marginVertical:10,
+    fontSize:20,
+    fontWeight:'bold'
+  },
+  containbtn:{
+
+    alignItems:'center'
+
+  },
+  btnreinicio:{
+    width:100,
+    height:50,
+    backgroundColor:'blue',
+    marginVertical:5,
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:10
+  },
+  btnlog:{
+    width:100,
+    height:50,
+    backgroundColor:'red',
+    marginVertical:5,
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:10
+  },
+  textbtnlog:{
+    color:'white',
+    fontWeight:'bold',
+    fontSize:15
+  },
+levelbtn: {
+  width: 100,
+  height: 50,
+  marginVertical: 5,
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 10
+},
+leveltitle: {
+  marginTop: 30,
+  fontSize: 25,
+  fontWeight: "bold",
+  color: "#D2691E",
+  textAlign: 'center',
+  marginBottom: 20
+}
+  
 });

@@ -11,6 +11,7 @@ export default function BienvenidaScreen({ navigation }: any) {
   const [dificultad, setdificultad] = useState("");
   const [levelview, setlevelview] = useState(false);
   const [mapview, setmapview] = useState(false);
+ 
   //const [gameobject, setgameobject] = useState<any>({});
   //navigation.navigate('Juego',insecto[0])
   type infojuego = {
@@ -58,9 +59,7 @@ export default function BienvenidaScreen({ navigation }: any) {
         <TouchableOpacity style={styles.btn} onPress={() => (setlevelview(true), setinsecto("escarabajo"))}>
           <Text style={styles.textbutton}>Escarabajo 🪲</Text>
         </TouchableOpacity>
-        <Text></Text>
-        <Text></Text>
-        <Button title='Regresar' onPress={() => navigation.navigate('Login')} color='#db4437' />
+       
       </View>
 
 
