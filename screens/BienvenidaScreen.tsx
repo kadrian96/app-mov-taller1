@@ -1,30 +1,35 @@
 
-import { Button, ImageBackground, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Button, ImageBackground, Modal, Pressable, StyleSheet, Text, View, Image } from 'react-native';
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native';
 
+
 export default function BienvenidaScreen({ navigation }: any) {
   //const insecto=['hormiga','abeja','araña','cucaracha','escarabajo']
   const [insecto, setinsecto] = useState("");
-  // const [dificultad, setdificultad] = useState("");
+  const [dificultad, setdificultad] = useState("");
   const [levelview, setlevelview] = useState(false);
+  const [mapview, setmapview] = useState(false);
   //const [gameobject, setgameobject] = useState<any>({});
   //navigation.navigate('Juego',insecto[0])
   type infojuego = {
     name: string,
     dificult: string,
+    map:string
   }
-  const asignarValores = (dificultad: string) => {
+  const asignarValores = (mapa: string) => {
     const gameobject: infojuego = {
       name: insecto,
-      dificult: dificultad
+      dificult: dificultad,
+      map: mapa
     }
     // console.log(insecto)
     //console.log(dificultad)
     //console.log(gameobject)
     navigation.navigate('Juego', gameobject)
     setlevelview(false);
+    setmapview(false);
     //setinsecto("");
     //setdificultad("");
   }
@@ -60,7 +65,7 @@ export default function BienvenidaScreen({ navigation }: any) {
 
 
 
-
+      
 
       {levelview && (
         <Modal animationType="slide" transparent={true}>
@@ -69,16 +74,61 @@ export default function BienvenidaScreen({ navigation }: any) {
               <Text style={styles.leveltitle}>Escoje la dificultad:</Text>
               <View style={styles.containbtn}>
 
-                <Pressable style={[styles.levelbtn, { backgroundColor: '#00CC99' }]} onPress={() => (asignarValores("facil"))}>
+                <Pressable style={[styles.levelbtn, { backgroundColor: '#00CC99' }]} onPress={() => (setmapview(true),setdificultad("facil"))}>
                   <Text style={styles.textbtn}>Facil</Text>
                 </Pressable>
-                <Pressable style={[styles.levelbtn, { backgroundColor: '#ED9121' }]} onPress={() => (asignarValores("medio"))} >
+                <Pressable style={[styles.levelbtn, { backgroundColor: '#ED9121' }]} onPress={() => (setmapview(true),setdificultad("medio"))} >
                   <Text style={styles.textbtn}>Medio</Text>
                 </Pressable>
-                <Pressable style={[styles.levelbtn, { backgroundColor: '#DE3163', marginBottom: 30 }]} onPress={() => (asignarValores("dificil"))} >
+                <Pressable style={[styles.levelbtn, { backgroundColor: '#DE3163', marginBottom: 30 }]} onPress={() => (setmapview(true),setdificultad("dificil"))} >
                   <Text style={styles.textbtn}>Dificil</Text>
                 </Pressable>
                 <Button title='Volver' onPress={() => setlevelview(false)} />
+
+              </View>
+
+            </View>
+          </View>
+        </Modal>
+      )}
+
+
+
+{mapview && (
+        <Modal animationType="slide" transparent={true}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalmapView}>
+              <Text style={styles.maptitle}>Escoje el mapa:</Text>
+              <View >
+
+                <Pressable style={styles.mapbtn} onPress={() => (asignarValores("hormiguero"))}>
+                  <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-hormiguero.jpg")}>
+                        <Text style={styles.textmapbtn}>Hormiguero</Text>
+                  </ImageBackground>
+                  
+                </Pressable>
+                <Pressable style={styles.mapbtn} onPress={() => (asignarValores("panal"))} >
+                  <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-panal2.jpg")}>
+                        <Text style={styles.textmapbtn}>Panal</Text>
+                  </ImageBackground>
+                </Pressable>
+                <Pressable style={styles.mapbtn} onPress={() => (asignarValores("telaraña"))} >
+                  <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-telaraña3.jpg")}>
+                        <Text style={styles.textmapbtn}>Telaraña</Text>
+                  </ImageBackground>
+                </Pressable>
+                <Pressable style={styles.mapbtn} onPress={() => (asignarValores("estanque"))} >
+                  <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-estanque.jpg")}>
+                        <Text style={styles.textmapbtn}>Estanque</Text>
+                  </ImageBackground>
+                </Pressable>
+                <Pressable style={[styles.mapbtn, {marginBottom:15}]} onPress={() => (asignarValores("jardin"))} >
+                  <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-jardin.jpg")}>
+                        <Text style={styles.textmapbtn}>Jardin</Text>
+                  </ImageBackground>
+                </Pressable>
+
+                <Button title='Volver' onPress={() => (setmapview(false),setlevelview(false))} />
 
               </View>
 
@@ -171,6 +221,44 @@ const styles = StyleSheet.create({
     color: "#D2691E",
     textAlign: 'center',
     marginBottom: 20
+  },
+  mapimg:{
+    height:100,
+    width:200,
+    resizeMode:'contain',
+    opacity:0.5,
+    justifyContent:'center',
+    alignItems: "center"
+  },
+  modalmapView: {
+    height: 720,
+    width: 350,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+
+  },
+  mapbtn: {
+    width: 200,
+    height: 100,
+    marginVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10
+  },
+  textmapbtn: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    opacity:1
+  },
+  maptitle: {
+    marginTop: 30,
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#D2691E",
+    textAlign: 'center',
+    marginBottom: 10
   },
 
 

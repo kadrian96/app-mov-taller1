@@ -83,6 +83,7 @@ export default function RegistroScreen({ navigation }: any) {
           // subir el link de la imagen al profile del usuario
           await updateProfile(user, {
             photoURL: imageUrl,
+            displayName: nick
           });
         } catch (error:any) {
           console.error(error.message);
@@ -260,8 +261,9 @@ export default function RegistroScreen({ navigation }: any) {
                   onChangeText={(texto) => setContrasenia(texto)}
                   value={contrasenia}
                 />
+                
+                <Text >¿Ya tienes cuenta? <Text style={{textDecorationLine:'underline', color:'blue'}} onPress={()=>navigation.navigate('Login')}>Inicia Sesion</Text></Text>
                 <View style={{ height: 40, width: "100%" }} />
-
                 <Button
                   title="Registrarse"
                   onPress={() => RegistroValidacion() }   

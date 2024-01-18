@@ -19,16 +19,24 @@ export default function JuegoScreen({ route,navigation }: any) {
   type infojuego={
     name:string,
     dificult:string,
+    map:string
   }
   const insecto:infojuego = route.params;
     //console.log(insecto)
-  //importado estatico de las imagenes
+  //importado estatico de las imagenes de insecto
 const hormigaimg = require('../assets/image/hormiga2.png');
 const abejaimg = require('../assets/image/abeja.png');
 const arañaimg = require('../assets/image/araña3.png');
 const cucarachaimg = require('../assets/image/cucaracha.png');
 const escarabajoimg = require('../assets/image/escarabajo.png');
 const bloodimg = require('../assets/image/bloodsplash.png');
+
+//importado estatico de las imagenes de mapas
+const hormigueroimg = require('../assets/image/fondo-hormiguero.jpg');
+const panalimg = require('../assets/image/fondo-panal2.jpg');
+const telarañaimg = require('../assets/image/fondo-telaraña3.jpg');
+const estanqueimg = require('../assets/image/fondo-estanque.jpg');
+const jardinimg = require('../assets/image/fondo-jardin.jpg');
 
   const [objects, setObjects] = useState<
     Array<{ id: number; img: any; x: number; y: number }>
@@ -64,6 +72,24 @@ const bloodimg = require('../assets/image/bloodsplash.png');
             return 500;
           case "dificil":
             return 300;
+
+    }
+  });
+  const [map, setmap] = useState(()=>{
+    switch (insecto.map) {
+          case "hormiguero":
+            return hormigueroimg;
+          case "panal":
+            return panalimg;
+          case "telaraña":
+            return telarañaimg;
+          case "estanque":
+            return estanqueimg;
+          case "jardin":
+            return jardinimg;
+          default:
+            return hormigueroimg;
+
 
     }
   });
@@ -248,7 +274,7 @@ const bloodimg = require('../assets/image/bloodsplash.png');
 
   return (
     <ImageBackground
-      source={require("../assets/image/lodo.jpg")}
+      source={map}
       style={styles.container}
     >
       <View style={styles.textocontain}>
