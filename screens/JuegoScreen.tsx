@@ -335,7 +335,7 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
                     <Pressable style={styles.btnreinicio} onPress={() => (RestartGame())}>
                         <Text style={styles.textbtn}>Reiniciar</Text>
                     </Pressable>
-                    <Pressable style={styles.btnsalir} onPress={() => (navigation.navigate('Bienvenida'))} >
+                    <Pressable style={styles.btnsalir} onPress={() => (navigation.navigate('Bienvenido'))} >
                         <Text style={styles.textbtn}>Salir</Text>
                     </Pressable> 
                     

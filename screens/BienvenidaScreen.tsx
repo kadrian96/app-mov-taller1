@@ -69,12 +69,13 @@ export default function BienvenidaScreen({ navigation }: any) {
       style={styles.container}
   
     >
-      <TouchableOpacity  onPress={() => navigation.navigate('My_Bottomtab')}>
+      <Text></Text>
+      <TouchableOpacity  onPress={() => navigation.navigate('Perfil')}>
       <Text style={styles.textbutton1}>Perfil</Text>
           <Image style={styles.img2} source={require('../assets/image/perfil.png')} />
         </TouchableOpacity>
 
-      
+      <Text></Text>
       <Text style={styles.subtitulo}>Escoje el insecto que quieres aplastar!!</Text>
       <View>
         <TouchableOpacity style={styles.btn} onPress={() => (setlevelview(true), setinsecto("hormiga"))}>

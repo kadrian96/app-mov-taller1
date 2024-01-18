@@ -17,7 +17,7 @@ export default function WelcomeScreen({ navigation }: any) {
           <Image style={styles.img3} source={require('../assets/image/registro.png')} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('My_Bottomtab')}>
+        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Bienvenido')}>
           <Text style={styles.textbutton}>PLAY</Text>
           <Image style={styles.img2} source={require('../assets/image/INSECT.png')} />
         </TouchableOpacity>
