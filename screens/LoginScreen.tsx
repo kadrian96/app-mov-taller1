@@ -1,4 +1,4 @@
-import { Button, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Button, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../config/Config';
@@ -18,9 +18,23 @@ export default function LoginScreen({navigation}:any) {
   })
   .catch((error) => {
     console.log('acceso denegado');
-    
+    console.log(error.code);
     const errorCode = error.code;
     const errorMessage = error.message;
+    switch (errorCode) {
+      case 'auth/invalid/credential':
+        Alert.alert('Error', 'Las credenciales son incorrectas');
+        break;
+      case 'auth/missing-password':
+        Alert.alert('Error', 'La contraseña no se ha enviado');
+        break;
+        case 'auth/invalid-email':
+        Alert.alert('Error', 'Ingrese un correo ');
+        break;
+      default:
+        Alert.alert('Error', 'Contacte con el administrador');
+        break;
+    }
   });
 
   // LIMPIAR DATOS
