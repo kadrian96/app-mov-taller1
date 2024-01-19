@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "app-taller01",
-    "slug": "app-taller01",
+    "name": "aplasta-insectos",
+    "slug": "aplasta-insectos",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/image/piojo.png",
+    "icon": "./assets/image/playstore-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/image/welcome.jpeg",
-      "resizeMode": "contain",
+      "image": "./assets/image/fondo-loading.jpg",
+      "resizeMode": "cover",
       "backgroundColor": "#F0FFFF"
     },
     "assetBundlePatterns": [

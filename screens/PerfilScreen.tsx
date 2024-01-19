@@ -128,7 +128,7 @@ export default function PerfilScreen({ navigation }: any) {
     update(ref(db, "usuarios/" + nick), {
       name: name,
       lastName: lastname,
-      email: mail,
+      //email: mail,
       age: age,
     });
 
@@ -160,11 +160,11 @@ export default function PerfilScreen({ navigation }: any) {
       }
     }
  
-    try {     
-      await updateEmail(user, mail);
-    } catch (error:any) {
-      console.info(error.message);
-    }
+    // try {     
+    //   await updateEmail(user, mail);
+    // } catch (error:any) {
+    //   console.info(error.message);
+    // }
     Alert.alert("Éxito", "Registro actualizado");
     setEditable(!editable);
     setLoading(false);
@@ -234,7 +234,7 @@ export default function PerfilScreen({ navigation }: any) {
         style={styles.input}
         placeholder="Correo"
         value={mail}
-        editable={editable}
+        editable={false}
         onChangeText={(text) => setMail(text)}
       />
       </View>

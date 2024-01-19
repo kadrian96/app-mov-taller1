@@ -192,22 +192,23 @@ export default function RegistroScreen({ navigation }: any) {
 
   return (
     <ImageBackground
-      source={require("../assets/image/bienvenida.jpg")}
+      source={require("../assets/image/fondo-bienv2.jpg")}
       style={styles.container}
     >
-      <Modal transparent={true}>
+      
         <SafeAreaView style={styles.mainContainer}>
           <KeyboardAwareScrollView
             style={styles.keyboardContainer}
             contentContainerStyle={styles.keyboardContentContainer}
+            
           >
-            <View style={styles.centeredView}>
+            
               <View style={styles.modalView}>
                 <Text style={styles.titulo}>Registrate</Text>
 
                 <TouchableOpacity onPress={pickImage} style={styles.boton}>
                   <Text style={styles.textoBoton}>
-                    Seleccionar desde la Galería
+                    sube una imagen de perfil
                   </Text>
                 </TouchableOpacity>
 
@@ -270,10 +271,10 @@ export default function RegistroScreen({ navigation }: any) {
                   color="green"
                 />
               </View>
-            </View>
+            
           </KeyboardAwareScrollView>
         </SafeAreaView>
-      </Modal>
+      
     </ImageBackground>
   );
 }
@@ -317,7 +318,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     height: "100%",
-    width: "85%",
+    width: "100%",
     backgroundColor: "white",
     borderRadius: 10,
     padding: 20,

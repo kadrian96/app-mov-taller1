@@ -130,20 +130,20 @@ export default function BienvenidaScreen({ navigation }: any) {
   return (
     
     <ImageBackground
-      source={require('../assets/image/juego.jpg')}
+      source={require('../assets/image/fondo-bienv4r3.png')}
       style={styles.container}
   
     >
       <Text></Text>
       <Pressable  style={styles.perfiltouch} onPress={() => userisLogged()}>
-      <Text style={styles.textbutton1}>Perfil</Text>
+      
         <View style={styles.circleContainer}>
           <Image source={{ uri: userimg }} style={styles.profileImage} />
         </View>
+        <Text style={styles.textbutton1}>Perfil</Text>
         
         </Pressable>
 
-      <Text></Text>
       <Text style={styles.subtitulo}>Escoje el insecto que quieres aplastar!!</Text>
       <View>
         <TouchableOpacity style={styles.btn} onPress={() => (setlevelview(true), setinsecto("hormiga"))}>
@@ -287,12 +287,15 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   subtitulo: {
-    flex:0.4,
+    //flex:0.4,
     marginTop: 20,
     fontSize: 25,
     fontWeight: "bold",
-    color: "rgb(0,30,255)",
-    textAlign: 'center'
+    color: "#FF0800",
+    textAlign: 'center',
+    marginBottom: 10,
+    paddingHorizontal:40
+
   },
 
 
@@ -460,7 +463,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 30,
     
   },
   profileImage: {
@@ -472,8 +474,6 @@ const styles = StyleSheet.create({
   perfiltouch:{
     //top:20,
     left:130,
-    // alignItems: "center",
-    // justifyContent: "center",
     marginTop:20,
     width:70,
     height:90,
