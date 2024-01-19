@@ -1,5 +1,13 @@
-import { Image, ImageBackground, Modal, Pressable } from "react-native";
+import { Image, ImageBackground, Modal, Pressable, ActivityIndicator  } from "react-native";
 import React, { useEffect, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import { storage } from "../config/Config";
+import {
+  getDownloadURL,
+  getStorage,
+  ref as reff,
+  uploadBytes,
+} from "firebase/storage";
 import {
   getDatabase,
   onValue,
@@ -12,11 +20,12 @@ import {
   Alert,
   StyleSheet,
   Text,
+  ScrollView,
   TextInput,
   View,
 } from "react-native";
 //FIREBASE
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, updateProfile, updateEmail, signOut } from "firebase/auth";
 import { auth, db } from "../config/Config";
 
 export default function PerfilScreen({ navigation }: any) {
@@ -35,7 +44,7 @@ export default function PerfilScreen({ navigation }: any) {
   const [age, setAge] = useState("")
   const [mail, setMail] = useState("")
   const [editable, setEditable] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {    
     const fetchData = async () => {
@@ -75,8 +84,7 @@ export default function PerfilScreen({ navigation }: any) {
     const user = auth.currentUser;
     if (user !== null) {      
       const photoURL: any = user.photoURL;
-      setuserimg(photoURL);    
-      console.log(user);      
+      setuserimg(photoURL);          
     }   
     return user
   }
@@ -97,15 +105,69 @@ export default function PerfilScreen({ navigation }: any) {
     setEditable(!editable);
   }
   
-  function guardar() {
+  const pickImage = async () => {
+    if(!editable){
+      return
+    }
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+
+    if (!result.canceled) {
+      setuserimg(result.assets[0].uri);
+    }
+  };
+  async function guardar() {
+
+    setLoading(true);
     update(ref(db, "usuarios/" + nick), {
       name: name,
       lastName: lastname,
       email: mail,
       age: age,
     });
+
+    const user = auth.currentUser;
+    if (user === null) {      
+          return
+    }
+
+    if (userimg) {
+      //subir la imagen al storage
+      const storageRef = reff(storage, "usuarios/" + nick); //se puede coloccar una carpeta para subir el archivo
+      try {
+    
+        const response = await fetch(userimg);
+        const blob = await response.blob();
+        await uploadBytes(storageRef, blob, {
+          contentType: "image/jpg",
+        });
+        console.log("La imagen se subió con éxito");
+        // Obtener la URL de la imagen
+        const imageUrl = await getDownloadURL(storageRef);       
+
+        await updateProfile(user, {
+          photoURL: imageUrl,
+          displayName: nick
+        });
+      } catch (error:any) {
+        console.error(error.message);
+      }
+    }
+ 
+    try {     
+      await updateEmail(user, mail);
+    } catch (error:any) {
+      console.info(error.message);
+    }
     Alert.alert("Éxito", "Registro actualizado");
     setEditable(!editable);
+    setLoading(false);
   }
   return (
 
@@ -113,9 +175,15 @@ export default function PerfilScreen({ navigation }: any) {
       source={require("../assets/image/fondo-perfil.jpg")}
       style={styles.container}
     >
+
+<ScrollView contentContainerStyle={styles.scrollContainer}>
+
+<View style={styles.content}>
       <Text style={styles.titulo}>Bienvenido a tu perfil</Text>
       <View style={styles.circleContainer}>
-        <Image source={{ uri: userimg }} style={styles.profileImage} />
+        <Pressable style={styles.circleContainer} onPress={() => pickImage()} >
+          <Image source={{ uri: userimg }} style={styles.profileImage} />
+        </Pressable>
       </View>
 
       <View style={styles.inputContainer}>
@@ -187,13 +255,34 @@ export default function PerfilScreen({ navigation }: any) {
       
       <Pressable style={styles.btnsalir} onPress={() => cerrarSesion()}>
         <Text style={styles.textbtn}>Cerrar Sesion</Text>
-      </Pressable>     
+      </Pressable>  
+      </View> 
+      
+     
+      </ScrollView>  
+      {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+          )}
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject, // Esto hace que el contenedor ocupe toda la pantalla
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Fondo semi-transparente
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContainer: {
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -218,7 +307,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titulo: {
-    marginTop: 65,
+    marginTop: 20,
     fontSize: 30,
     fontWeight: "bold",
     color: "#C41E3A",
