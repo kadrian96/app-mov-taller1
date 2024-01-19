@@ -18,6 +18,7 @@ export default function BienvenidaScreen({ navigation }: any) {
   const [toptenDatos, setToptenDatos] = useState([]);
   const [logged, setlogged] = useState(false);
   const [nick, setnick] = useState("");
+  const [userimg, setuserimg] = useState("https://t4.ftcdn.net/jpg/05/10/14/15/240_F_510141519_evdfo5bdjlaMmrlyCCMzcO4LID6doX6W.jpg");
   
  
   
@@ -27,7 +28,9 @@ export default function BienvenidaScreen({ navigation }: any) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const displayName:any = user.displayName;
+        const photoURL:any = user.photoURL;
         setnick(displayName);
+        setuserimg(photoURL);
         setlogged(true)
         console.log("Este es el nick: ", nick)
       } else {
@@ -132,10 +135,13 @@ export default function BienvenidaScreen({ navigation }: any) {
   
     >
       <Text></Text>
-      <TouchableOpacity  onPress={() => userisLogged()}>
+      <Pressable  style={styles.perfiltouch} onPress={() => userisLogged()}>
       <Text style={styles.textbutton1}>Perfil</Text>
-          <Image style={styles.img2} source={require('../assets/image/perfil.png')} />
-        </TouchableOpacity>
+        <View style={styles.circleContainer}>
+          <Image source={{ uri: userimg }} style={styles.profileImage} />
+        </View>
+        
+        </Pressable>
 
       <Text></Text>
       <Text style={styles.subtitulo}>Escoje el insecto que quieres aplastar!!</Text>
@@ -411,12 +417,11 @@ const styles = StyleSheet.create({
   borderRadius: 500,
   },
   textbutton1: {
-    fontSize: 15,
-    color: 'white',
+    fontSize: 18,
+    color: '#002387',
     fontWeight: 'bold',
-    top:20,
-    left:320
-
+    //top:5,
+    left:15
   },
   separator: {
     height: 1,
@@ -446,6 +451,34 @@ const styles = StyleSheet.create({
     //width:250
     
   },
+  circleContainer: {
+    
+    width: 70,
+    height: 70,
+    borderRadius: 50,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+    
+  },
+  profileImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    borderRadius: 50,
+  },
+  perfiltouch:{
+    //top:20,
+    left:130,
+    // alignItems: "center",
+    // justifyContent: "center",
+    marginTop:20,
+    width:70,
+    height:90,
+    //backgroundColor:'#C0448F'
+
+  }
 
 
 })
