@@ -32,7 +32,7 @@ export default function BienvenidaScreen({ navigation }: any) {
         setnick(displayName);
         setuserimg(photoURL);
         setlogged(true)
-        console.log("Este es el nick: ", nick)
+        //console.log("Este es el nick: ", nick)
       } else {
         // User is signed out
         console.log("Usuario desconectado");
