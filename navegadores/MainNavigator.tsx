@@ -5,9 +5,8 @@ import BienvenidaScreen from '../screens/BienvenidaScreen';
 import JuegoScreen from "../screens/JuegoScreen";
 import LoginScreen from "../screens/LoginScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import PerfilScreen from "../screens/PerfilScreen";
-import { Icon } from "@rneui/themed";
 import RegistroScreen from "../screens/RegistroScreen";
 
 const Stack = createStackNavigator();

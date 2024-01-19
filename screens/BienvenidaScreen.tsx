@@ -36,7 +36,7 @@ export default function BienvenidaScreen({ navigation }: any) {
   return (
     
     <ImageBackground
-      source={require('../assets/image/bienvenida.jpg')}
+      source={require('../assets/image/juego.jpg')}
       style={styles.container}
   
     >
@@ -159,10 +159,11 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   subtitulo: {
+    flex:0.4,
     marginTop: 20,
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: "bold",
-    color: "#4B5320",
+    color: "rgb(0,30,255)",
     textAlign: 'center'
   },
 

@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   textbutton: {
     fontSize: 15,
-    color: 'red',
+    color: 'rgb(0,255,30)',
     fontWeight: 'bold',
   },
   img2: {

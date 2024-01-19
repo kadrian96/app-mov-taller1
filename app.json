@@ -7,7 +7,7 @@
     "icon": "./assets/image/piojo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/image/full.jpg",
+      "image": "./assets/image/welcome.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#F0FFFF"
     },
