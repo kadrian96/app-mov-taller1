@@ -10,8 +10,6 @@ import {
 } from "firebase/database";
 import {
   Alert,
-  Button,
-  FlatList,
   StyleSheet,
   Text,
   TextInput,
@@ -29,104 +27,88 @@ export default function PerfilScreen({ navigation }: any) {
     age: "",
     email: "",
   });
-  const [email, setemail] = useState("");
+
   const [userimg, setuserimg] = useState("https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg");
   const [nick, setnick] = useState("")
-  
+  const [name, setName] = useState("")
+  const [lastname, setLastName] = useState("")
+  const [age, setAge] = useState("")
+  const [mail, setMail] = useState("")
+  const [editable, setEditable] = useState(false);
 
-  type usuario = {
-    name: string;
-    lastName: string;
-    nick: string;
-    age: string;
-    email: string;
-  };
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     // User is signed in, see docs for a list of available properties
-  //     // https://firebase.google.com/docs/reference/js/auth.user
-  //     const displayName:any = user.displayName
-  //     console.log(displayName)
-  //     setnick(displayName)
-  //     // ...
-  //   } else {
-  //     // User is signed out
-  //     // ...
-  //   }
-  // });
 
-  useEffect(() => {
-    usuarioActual();
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const displayName: any = user.displayName;
-        //console.log("Este es el nick: ", displayName);
-        setnick(displayName);
-
-        const starCountRef = ref(db, "usuarios/" + nick);
+  useEffect(() => {    
+    const fetchData = async () => {
+      try {
+        const user = usuarioActual();
+        if (user === null){
+          return;
+        }        
+        setnick(user.displayName?user.displayName:"");
+        const starCountRef = ref(db, "usuarios/" + user.displayName);
         onValue(starCountRef, (snapshot) => {
-          const data = snapshot.val();
-          setDatos(data);
-          //console.log("Datos del usuario:", data);
+          if(datos.name != "") return
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            setDatos(data);
+            setUsuario(data);
+            return
+          } else {
+            console.error('No hay datos en la referencia.');
+          }
         });
-      } else {
-       
-        // User is signed out
-        console.log("Usuario desconectado");
-        
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
       }
-    });
-
-    return () => {
-      // Desuscribe la función cuando el componente se desmonta
-      unsubscribe();
     };
+    fetchData();
+  }, []);
 
-    //   // LEER LOS DATOS
-    //   function leer(){
-    //     const starCountRef = ref(db, 'usuarios/' +nick);  //postID la clave para leer un elemento en especifico
-    //     onValue(starCountRef, (snapshot) => {
-    //     const data = snapshot.val();
-    //     setDatos(data)
-    //     console.log(datos)
-    // });
-
-    //    }
-
-    //leer();
-  }, [datos]);
+  function setUsuario(data: any) {
+    setName(data.name);
+    setLastName(data.lastName);
+    setAge(data.age);
+    setMail(data.email);
+  }
 
   function usuarioActual() {
     const user = auth.currentUser;
-    if (user !== null) {
-      
-      // The user object has basic properties such as display name, email, etc.
-      const email: any = user.email;
+    if (user !== null) {      
       const photoURL: any = user.photoURL;
-      //setemail(email);
-      setuserimg(photoURL);
-      //console.log(email);
-      //console.log(userimg);
-    }
-   
+      setuserimg(photoURL);    
+      console.log(user);      
+    }   
+    return user
   }
 
   function cerrarSesion() {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
-        // Sign-out successful.
         Alert.alert("Mensaje", "Se cerro la sesion");
         navigation.navigate("Welcome");
       })
       .catch((error) => {
-        // An error happened.
         Alert.alert(error.code, error.message);
       });
   }
 
+  function editar() {
+    setEditable(!editable);
+  }
+  
+  function guardar() {
+    update(ref(db, "usuarios/" + nick), {
+      name: name,
+      lastName: lastname,
+      email: mail,
+      age: age,
+    });
+    Alert.alert("Éxito", "Registro actualizado");
+    setEditable(!editable);
+  }
   return (
+
     <ImageBackground
       source={require("../assets/image/fondo-perfil.jpg")}
       style={styles.container}
@@ -135,20 +117,101 @@ export default function PerfilScreen({ navigation }: any) {
       <View style={styles.circleContainer}>
         <Image source={{ uri: userimg }} style={styles.profileImage} />
       </View>
-      <Text>Nick: {nick}</Text>
-      <Text>Nombre: {datos.name}</Text>
-      <Text>Apellido: {datos.lastName}</Text>
-      <Text>Edad: {datos.age}</Text>
-      <Text>correo: {datos.email}</Text>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Nick</Text>
+        <TextInput
+        style={styles.input}
+        placeholder="Nick"
+        value={nick}
+        editable={false}
+        onChangeText={(text) => setnick(nick)}
+      />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Nombre</Text>
+        <TextInput
+        style={styles.input}
+        placeholder="Nombre"
+        value={name}
+        editable={editable}
+        onChangeText={(text) => setName(text)}
+      />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Apellido</Text>
+        <TextInput
+        style={styles.input}
+        placeholder="Apellido"
+        value={lastname}
+        editable={editable}
+        onChangeText={(text) => setLastName(text)}
+      />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Edad</Text>
+        <TextInput
+        style={styles.input}
+        placeholder="Edad"
+        value={age}
+        editable={editable}
+        onChangeText={(text) => setAge(text)}
+      />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Correo</Text>
+        <TextInput
+        style={styles.input}
+        placeholder="Correo"
+        value={mail}
+        editable={editable}
+        onChangeText={(text) => setMail(text)}
+      />
+      </View>
+            
+      {!editable && (
+        <Pressable style={styles.btnEditar} onPress={() => editar()}>
+        <Text style={styles.textbtn}>Editar</Text>
+      </Pressable>
+      )}
+      
+      {editable && (
+        <Pressable style={styles.btnsalir} onPress={() => guardar()}>
+          <Text style={styles.textbtn}>Guardar</Text>
+        </Pressable>
+      )}
+      
       <Pressable style={styles.btnsalir} onPress={() => cerrarSesion()}>
         <Text style={styles.textbtn}>Cerrar Sesion</Text>
-      </Pressable>
-     
+      </Pressable>     
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    width: '80%',
+  }, 
+  label: {
+    marginRight: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+  },
   container: {
     flex: 1,
     resizeMode: "cover",
@@ -181,7 +244,17 @@ const styles = StyleSheet.create({
     width: 120,
     height: 50,
     backgroundColor: "red",
-    marginTop: 60,
+    marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+  },
+  
+  btnEditar: {
+    width: 120,
+    height: 50, 
+    backgroundColor: "green",
+    marginTop: 20,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
@@ -204,7 +277,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
-    //justifyContent:'center'
   },
   gameovertxt:{
     color:'red',
