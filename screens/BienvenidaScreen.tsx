@@ -1,8 +1,11 @@
 
 import { Button, ImageBackground, Modal, Pressable, StyleSheet, Text, View, Image } from 'react-native';
-import React, { useState } from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import React, { useEffect, useState } from 'react'
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native';
+import { get, onValue, ref } from 'firebase/database';
+import { auth, db } from '../config/Config';
+import { onAuthStateChanged } from 'firebase/auth';
 
 
 export default function BienvenidaScreen({ navigation }: any) {
@@ -11,8 +14,80 @@ export default function BienvenidaScreen({ navigation }: any) {
   const [dificultad, setdificultad] = useState("");
   const [levelview, setlevelview] = useState(false);
   const [mapview, setmapview] = useState(false);
-  //const [gameobject, setgameobject] = useState<any>({});
-  //navigation.navigate('Juego',insecto[0])
+  const [scoreview, setscoreview] = useState(false);
+  const [toptenDatos, setToptenDatos] = useState([]);
+  const [logged, setlogged] = useState(false);
+  const [nick, setnick] = useState("");
+  const [userimg, setuserimg] = useState("https://t4.ftcdn.net/jpg/05/10/14/15/240_F_510141519_evdfo5bdjlaMmrlyCCMzcO4LID6doX6W.jpg");
+  
+ 
+  
+  // OBTENER DATOS USUARIO
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const displayName:any = user.displayName;
+        const photoURL:any = user.photoURL;
+        setnick(displayName);
+        setuserimg(photoURL);
+        setlogged(true)
+        //console.log("Este es el nick: ", nick)
+      } else {
+        // User is signed out
+        console.log("Usuario desconectado");
+        setlogged(false)
+      }
+    });
+  
+    return () => {
+      // Desuscribe la función cuando el componente se desmonta
+      unsubscribe();
+    };
+  }, []); 
+  
+
+
+  
+  
+  useEffect(() => {
+    // LEER DATOS
+    const leer = async () => {
+      try {
+        const starCountRef = ref(db, "puntuaciones/");
+
+        // Usamos onValue para suscribirnos a cambios en la base de datos
+        onValue(starCountRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const dataTemp: any = Object.keys(data).map((id) => ({
+              id,
+              ...data[id],
+            }));
+            //ordeno de mayor a menor
+            const sortedData:any = [...dataTemp].sort((a, b) => b.score - a.score);
+            //obtengo las 10 puntuaciones mas altas
+            const primerosDiezElementos = sortedData.slice(0, 10);
+            setToptenDatos(primerosDiezElementos);
+          } else {
+            console.error('No hay datos en la referencia.');
+          }
+        });
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
+    
+
+    leer();
+  }, []); 
+
+  type puntuacion = {
+    id: any;
+    nick: string;
+    score: number;
+  };
+
   type infojuego = {
     name: string,
     dificult: string,
@@ -33,6 +108,25 @@ export default function BienvenidaScreen({ navigation }: any) {
     //setinsecto("");
     //setdificultad("");
   }
+
+  //render seprator
+  const renderSeparator = () => (
+    <View style={styles.separator} />
+  );
+
+    //FUNCION PARA LA EXCEPCION DE OFFLINE
+    function userisLogged(){
+      if(logged){
+        return navigation.navigate('Perfil');
+      }
+      else{
+        return navigation.navigate('Offline');
+      }
+    }
+
+  // Ordenar el array de objetos basado en la clave 'value'
+ 
+
   return (
     
     <ImageBackground
@@ -41,10 +135,13 @@ export default function BienvenidaScreen({ navigation }: any) {
   
     >
       <Text></Text>
-      <TouchableOpacity  onPress={() => navigation.navigate('Perfil')}>
+      <Pressable  style={styles.perfiltouch} onPress={() => userisLogged()}>
       <Text style={styles.textbutton1}>Perfil</Text>
-          <Image style={styles.img2} source={require('../assets/image/perfil.png')} />
-        </TouchableOpacity>
+        <View style={styles.circleContainer}>
+          <Image source={{ uri: userimg }} style={styles.profileImage} />
+        </View>
+        
+        </Pressable>
 
       <Text></Text>
       <Text style={styles.subtitulo}>Escoje el insecto que quieres aplastar!!</Text>
@@ -68,7 +165,7 @@ export default function BienvenidaScreen({ navigation }: any) {
       
         <Text></Text>
         <Text></Text>
-        <Button title='Regresar' onPress={() => navigation.navigate('Login')} color='#db4437' />
+        <Button title='Puntuaciones' onPress={() => setscoreview(true)} color='#db4437' />
       </View>
       
 
@@ -144,6 +241,37 @@ export default function BienvenidaScreen({ navigation }: any) {
           </View>
         </Modal>
       )}
+
+
+      
+{scoreview && (
+        <Modal animationType="slide" transparent={true}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalmapView}>
+              <Text style={styles.maptitle}>Top 10 score:</Text>
+              <View style={styles.flat1}>
+              <FlatList
+                data={toptenDatos}
+          renderItem={({ item, index }: { item: puntuacion; index:number }) => (
+            <View style={{ marginTop: 15 ,flexDirection:'row'}}>
+              <Text style={styles.keytext}>{`${index + 1}. Nick:`}<Text style={styles.valuetext}> {item.nick}</Text> </Text>
+              <Text style={styles.keytext}>  Score:<Text style={styles.valuetext}> {+item.score}</Text> </Text>
+            </View>
+          )}
+          ItemSeparatorComponent={renderSeparator}
+          style={styles.lista}
+        />
+
+
+                <Button title='Volver' onPress={() => setscoreview(false)} />
+
+              </View>
+
+            </View>
+          </View>
+        </Modal>
+      )}
+
 
     </ImageBackground>
 
@@ -290,13 +418,68 @@ const styles = StyleSheet.create({
   borderRadius: 500,
   },
   textbutton1: {
-    fontSize: 15,
-    color: 'white',
+    fontSize: 18,
+    color: '#002387',
     fontWeight: 'bold',
-    top:20,
-    left:320
+    //top:5,
+    left:15
+  },
+  separator: {
+    height: 1,
+    backgroundColor: 'gray',
+    marginTop:5
+  },
+  keytext:{
+    color:'#00AB66',
+    fontWeight:'bold',
+    fontStyle:'italic'
 
   },
+  valuetext:{
+    color:'black',
+    fontWeight:'normal',
+    fontStyle:'normal'
+  },
+  lista:{
+    //backgroundColor: '#C5CBE1',
+    padding: 10,
+    margin: 10,
+    borderRadius: 5,
+
+  },
+  flat1:{
+    height:500,
+    //width:250
+    
+  },
+  circleContainer: {
+    
+    width: 70,
+    height: 70,
+    borderRadius: 50,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+    
+  },
+  profileImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    borderRadius: 50,
+  },
+  perfiltouch:{
+    //top:20,
+    left:130,
+    // alignItems: "center",
+    // justifyContent: "center",
+    marginTop:20,
+    width:70,
+    height:90,
+    //backgroundColor:'#C0448F'
+
+  }
 
 
 })

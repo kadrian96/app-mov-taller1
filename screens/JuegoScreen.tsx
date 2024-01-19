@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Image,
   ImageBackground,
@@ -11,6 +12,9 @@ import {
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Audio } from 'expo-av';
+import { ref, set } from "firebase/database";
+import { auth, db } from "../config/Config";
+import { onAuthStateChanged } from "firebase/auth";
 
 
 
@@ -47,6 +51,8 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
   const [viewDimensions, setViewDimensions] = useState({ width: 0, height: 0 });
   const [altura, setaltura] = useState("");
   const [gameActive, setGameActive] = useState(true);
+  const [nick, setnick] = useState("");
+  const [logged, setlogged] = useState(false);
   const [insectoimg, setInsectoimg] = useState(()=>{
     switch (insecto.name) {
           case "hormiga":
@@ -96,22 +102,22 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
 
 
   
-  //SELECCION DE EMOJI
+  //OBTENCION DEL USUARIO ACTUAL
   
-  //   switch (insecto) {
-  //     case "hormiga":
-  //       setInsectoimg(hormigaimg)
-  //     case "abeja":
-  //       setInsectoimg(abejaimg)
-  //     case "araña":
-  //       setInsectoimg(arañaimg)
-  //     case "cucaracha":
-  //       setInsectoimg(cucarachaimg)
-  //     case "escarabajo":
-  //       setInsectoimg(escarabajoimg)
+  function usuarioActual() {
+    const user = auth.currentUser;
+    if (user !== null) {
+      
+      // The user object has basic properties such as display name, email, etc.
     
-  // }
-  
+      const displayName: any = user.displayName;
+      setnick(displayName);
+      //console.log(nick)
+      setlogged(true);
+    
+    }
+   
+  }
   
     
   
@@ -124,6 +130,7 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
 
   //LOGICA DEL JUEGO
   useEffect(() => {
+    usuarioActual();
     // Generar objetos aleatorios cada segundo
     if (!gameActive) {
         return; // No generar más objetos si el juego no está activo
@@ -181,6 +188,7 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
       setGameActive(false);
       setObjects([]);
       stopBackgroundMusic();
+      guardarScore(Date.now(),nick,score)
     }
   }, [time]);
 
@@ -271,6 +279,28 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
       await soundback.playAsync();
     }
   };
+
+  // Guardar score
+  function guardarScore(
+    id:any,
+    nick: string,
+    score: number
+  ) {
+    if(logged){
+      set(ref(db, "puntuaciones/" + id), {
+        nick: nick,
+        score: score,
+      })
+        .then(() => {
+          console.log("puntuacion guardada")
+        })
+        .catch((error) => {
+          console.error("Error al guardar en la base de datos:", error);
+          
+        });
+
+    }
+  }
 
   return (
     <ImageBackground

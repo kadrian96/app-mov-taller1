@@ -10,32 +10,32 @@ export default function LoginScreen({ navigation }: any) {
 
   function login() {
     signInWithEmailAndPassword(auth, correo, contrasenia)
-      .then((userCredential) => {
-        // Signed in 
-        const user = userCredential.user;
-        navigation.navigate('My_Bottomtab')
-        // ...
-      })
-      .catch((error) => {
-        console.log('acceso denegado');
-        console.log(error.code);
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        switch (errorCode) {
-          case 'auth/invalid/credential':
-            Alert.alert('Error', 'Las credenciales son incorrectas');
-            break;
-          case 'auth/missing-password':
-            Alert.alert('Error', 'La contraseña no se ha enviado');
-            break;
-          case 'auth/invalid-email':
-            Alert.alert('Error', 'Ingrese un correo ');
-            break;
-          default:
-            Alert.alert('Error', 'Contacte con el administrador');
-            break;
-        }
-      });
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    navigation.navigate('Bienvenido')
+    // ...
+  })
+  .catch((error) => {
+    console.log('acceso denegado');
+    console.log(error.code);
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    switch (errorCode) {
+      case 'auth/invalid/credential':
+        Alert.alert('Error', 'Las credenciales son incorrectas');
+        break;
+      case 'auth/missing-password':
+        Alert.alert('Error', 'La contraseña no se ha enviado');
+        break;
+        case 'auth/invalid-email':
+        Alert.alert('Error', 'Ingrese un correo ');
+        break;
+      default:
+        Alert.alert('Error', 'Contacte con el administrador');
+        break;
+    }
+  });
 
     // LIMPIAR DATOS
     setCorreo("")

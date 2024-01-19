@@ -8,6 +8,7 @@ import WelcomeScreen from "../screens/WelcomeScreen";
 
 import PerfilScreen from "../screens/PerfilScreen";
 import RegistroScreen from "../screens/RegistroScreen";
+import OfflineScreen from "../screens/OfflineScreen";
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,11 @@ function MyStack() {
       <Stack.Screen
         name="Perfil"
         component={PerfilScreen}
+       
+      />
+      <Stack.Screen
+        name="Offline"
+        component={OfflineScreen}
        
       />
 
