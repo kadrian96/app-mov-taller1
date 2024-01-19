@@ -44,11 +44,11 @@ export default function RegistroScreen({ navigation }: any) {
       quality: 1,
     });
 
-    console.log(result);
+    //console.log(result);
 
     if (!result.canceled) {
       setImagen(result.assets[0].uri);
-      console.log(imagen);
+      //console.log(imagen);
     }
   };
 

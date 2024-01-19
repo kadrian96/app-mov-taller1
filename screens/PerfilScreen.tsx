@@ -172,7 +172,7 @@ export default function PerfilScreen({ navigation }: any) {
   return (
 
     <ImageBackground
-      source={require("../assets/image/fondo-perfil.jpg")}
+      source={require("../assets/image/fondo-perfil2.jpg")}
       style={styles.container}
     >
 
