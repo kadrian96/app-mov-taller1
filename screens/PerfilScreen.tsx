@@ -180,11 +180,9 @@ export default function PerfilScreen({ navigation }: any) {
 
 <View style={styles.content}>
       <Text style={styles.titulo}>Bienvenido a tu perfil</Text>
-      <View style={styles.circleContainer}>
         <Pressable style={styles.circleContainer} onPress={() => pickImage()} >
           <Image source={{ uri: userimg }} style={styles.profileImage} />
         </Pressable>
-      </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Nick</Text>
@@ -321,7 +319,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 30,
+    marginBottom: 20
   },
   profileImage: {
     width: "100%",
