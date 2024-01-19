@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function OfflineScreen({ navigation }:any) {
   return (
-    <ImageBackground source={require('../assets/image/fondo-offline.png')}style={styles.container}>
+    <ImageBackground source={require('../assets/image/fondo-offline.jpg')}style={styles.container}>
       <Text style={styles.titulo}>CREA UNA CUENTA O INICIA SESION</Text>
       <Text style={styles.parrafo}>para que puedas registar tus puntajes y puedas guardar tu informacion</Text>
       <Pressable style={[styles.optbtn, {backgroundColor:'#48BF91'}]} onPress={()=>navigation.navigate('Registro')}>

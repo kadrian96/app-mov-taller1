@@ -4,10 +4,10 @@
     "slug": "aplasta-insectos",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/image/playstore-icon.png",
+    "icon": "./assets/image/ios-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/image/fondo-loading.jpg",
+      "image": "./assets/image/fondo-loading.png",
       "resizeMode": "cover",
       "backgroundColor": "#F0FFFF"
     },
@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/image/playstore-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kevinadrian.aplastainsectos"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "76a60898-6d53-4248-beea-b10abda16080"
+      }
     }
   }
 }

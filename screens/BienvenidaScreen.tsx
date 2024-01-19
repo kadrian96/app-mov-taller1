@@ -130,7 +130,7 @@ export default function BienvenidaScreen({ navigation }: any) {
   return (
     
     <ImageBackground
-      source={require('../assets/image/fondo-bienv4r3.png')}
+      source={require('../assets/image/fondo-bienv4r3.jpg')}
       style={styles.container}
   
     >
