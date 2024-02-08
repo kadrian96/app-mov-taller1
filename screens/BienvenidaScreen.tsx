@@ -99,7 +99,7 @@ export default function BienvenidaScreen({ navigation }: any) {
       dificult: dificultad,
       map: mapa
     }
-    // console.log(insecto)
+    //console.log(insecto)
     //console.log(dificultad)
     //console.log(gameobject)
     navigation.navigate('Juego', gameobject)
