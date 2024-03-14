@@ -24,6 +24,7 @@ function MyStack() {
       <Stack.Screen
         name="Juego"
         component={JuegoScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Login"
@@ -43,11 +44,37 @@ function MyStack() {
       <Stack.Screen
         name="Perfil"
         component={PerfilScreen}
+        options={({ navigation }) => ({
+          headerTitle: "Tu Perfil",
+          headerTintColor: "#fff",
+          headerStyle: {
+            backgroundColor: "#1ABC9C",
+          
+          },
+          headerTitleStyle: {
+            //fontWeight: "bold",
+            fontSize: 20,
+          }
+
+        })}
        
       />
       <Stack.Screen
         name="Offline"
         component={OfflineScreen}
+        options={({ navigation }) => ({
+          headerTitle: "Offline",
+          headerTintColor: "#fff",
+          headerStyle: {
+            backgroundColor: "#1ABC9C",
+          
+          },
+          headerTitleStyle: {
+            //fontWeight: "bold",
+            fontSize: 20,
+          }
+
+        })}
        
       />
 

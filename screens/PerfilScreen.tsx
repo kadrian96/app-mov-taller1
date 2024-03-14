@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Modal, Pressable, ActivityIndicator  } from "react-native";
+import { Image, ImageBackground, Modal, Pressable, ActivityIndicator, Dimensions  } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "../config/Config";
@@ -27,6 +27,8 @@ import {
 //FIREBASE
 import { getAuth, updateProfile, updateEmail, signOut } from "firebase/auth";
 import { auth, db } from "../config/Config";
+import { useFonts } from "expo-font";
+import { Icon } from "@rneui/base";
 
 export default function PerfilScreen({ navigation }: any) {
   const [datos, setDatos] = useState<any>({
@@ -169,36 +171,59 @@ export default function PerfilScreen({ navigation }: any) {
     setEditable(!editable);
     setLoading(false);
   }
+
+ //Importar fonts
+ const [fontsLoaded] = useFonts({
+  pixel: require("../assets/fonts/pixel.ttf"),
+});
+
+if (!fontsLoaded) {
+  return null;
+}
+
+
   return (
 
-    <ImageBackground
-      source={require("../assets/image/fondo-perfil2.jpg")}
-      style={styles.container}
-    >
+    <View style={styles.container}>
 
-<ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ImageBackground
+      source={require("../assets/image/modal-gameover6.jpg")}
+      style={[styles.imgbackground, styles.fixed, { zIndex: -1 }]}
+    />
+
+<ScrollView contentContainerStyle={styles.keyboardContentContainer}
+           style={styles.keyboardContainer}
+           keyboardShouldPersistTaps="handled" >
 
 <View style={styles.content}>
-      <Text style={styles.titulo}>Bienvenido a tu perfil</Text>
+      <Text style={styles.titulo}>Bienvenido</Text>
+      
         <Pressable style={styles.circleContainer} onPress={() => pickImage()} >
-          <Image source={{ uri: userimg }} style={styles.profileImage} />
+          <ImageBackground source={{ uri: userimg }} style={styles.profileImage}>
+          {editable && (
+               <Icon name='edit' type='material' color='#42A5F5' style={{marginTop:80, marginLeft:30}}/>
+          )}
+         
+          </ImageBackground>
         </Pressable>
+        
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nick</Text>
+        <Text style={styles.label}>Nick:</Text>
         <TextInput
-        style={styles.input}
+        style={[styles.input,{color:'#707B7C', fontWeight:'400',fontStyle:'italic',borderBottomColor:'#16A085'}]}
         placeholder="Nick"
         value={nick}
         editable={false}
         onChangeText={(text) => setnick(nick)}
+        
       />
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nombre</Text>
+        <Text style={styles.label}>Nombre:</Text>
         <TextInput
-        style={styles.input}
+        style={[styles.input,{color:editable ? 'black' :'#707B7C', fontWeight:editable ? 'normal' : '400',fontStyle: editable ? 'normal' : 'italic', borderBottomColor: editable ? '#3498DB':'#16A085'}]}
         placeholder="Nombre"
         value={name}
         editable={editable}
@@ -207,9 +232,9 @@ export default function PerfilScreen({ navigation }: any) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Apellido</Text>
+        <Text style={styles.label}>Apellido:</Text>
         <TextInput
-        style={styles.input}
+        style={[styles.input,{color:editable ? 'black' :'#707B7C', fontWeight:editable ? 'normal' : '400',fontStyle: editable ? 'normal' : 'italic', borderBottomColor: editable ? '#3498DB':'#16A085'}]}
         placeholder="Apellido"
         value={lastname}
         editable={editable}
@@ -218,9 +243,9 @@ export default function PerfilScreen({ navigation }: any) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Edad</Text>
+        <Text style={styles.label}>Edad:</Text>
         <TextInput
-        style={styles.input}
+        style={[styles.input,{color:editable ? 'black' :'#707B7C', fontWeight:editable ? 'normal' : '400',fontStyle: editable ? 'normal' : 'italic', borderBottomColor: editable ? '#3498DB':'#16A085'}]}
         placeholder="Edad"
         value={age}
         editable={editable}
@@ -229,13 +254,14 @@ export default function PerfilScreen({ navigation }: any) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Correo</Text>
+        <Text style={styles.label}>Correo:</Text>
         <TextInput
-        style={styles.input}
+        style={[styles.input,{color:'#707B7C', fontWeight:'400', fontStyle:'italic',borderBottomColor:'#16A085'}]}
         placeholder="Correo"
         value={mail}
         editable={false}
         onChangeText={(text) => setMail(text)}
+        
       />
       </View>
             
@@ -246,8 +272,13 @@ export default function PerfilScreen({ navigation }: any) {
       )}
       
       {editable && (
-        <Pressable style={styles.btnsalir} onPress={() => guardar()}>
+        <Pressable style={styles.btnguardar} onPress={() => guardar()}>
           <Text style={styles.textbtn}>Guardar</Text>
+        </Pressable>
+      )}
+      {editable && (
+        <Pressable style={styles.btncancelar} onPress={() => setEditable(!editable)}>
+          <Text style={styles.textbtn}>Cancelar</Text>
         </Pressable>
       )}
       
@@ -263,7 +294,7 @@ export default function PerfilScreen({ navigation }: any) {
               <ActivityIndicator size="large" color="#0000ff" />
             </View>
           )}
-    </ImageBackground>
+    </View>
   );
 }
 
@@ -275,9 +306,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContainer: {
+   
   },
   content: {
     flex: 1,
+    width:'100%',
+    height:'100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -285,40 +319,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
-    width: '80%',
+    width: 250,
   }, 
   label: {
+    width:70,
     marginRight: 10,
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
+    color:'#696969'
   },
   input: {
     flex: 1,
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    borderWidth:0.5,
+    borderRadius:12,
+    borderBottomWidth: 4,
     paddingHorizontal: 10,
+    //borderBottomColor:'#16A085',
+   
+    
+  
   },
   container: {
     flex: 1,
-    resizeMode: "cover",
     alignItems: "center",
   },
   titulo: {
-    marginTop: 20,
+    marginTop: 30,
     fontSize: 30,
-    fontWeight: "bold",
-    color: "#C41E3A",
+    fontFamily: "pixel",
+    color: "#D4AC0D",
     textAlign: "center",
-    marginBottom: 80,
+    marginBottom: 40,
+    textShadowColor: '#F2F3F4',
+    textShadowOffset: { width: -2, height: 5 },
+    textShadowRadius: 12
+
   },
   circleContainer: {
+    position:"relative",
     width: 100,
     height: 100,
     borderRadius: 50,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    
     marginBottom: 20
   },
   profileImage: {
@@ -329,9 +375,9 @@ const styles = StyleSheet.create({
   },
   btnsalir: {
     width: 120,
-    height: 50,
+    height: 40,
     backgroundColor: "red",
-    marginTop: 20,
+    marginTop: 10,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
@@ -339,9 +385,9 @@ const styles = StyleSheet.create({
   
   btnEditar: {
     width: 120,
-    height: 50, 
-    backgroundColor: "green",
-    marginTop: 20,
+    height: 40, 
+    backgroundColor: "#1db954",
+    marginTop: 15,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
@@ -420,6 +466,46 @@ leveltitle: {
   color: "#D2691E",
   textAlign: 'center',
   marginBottom: 20
-}
+},
+btnguardar: {
+  width: 120,
+  height: 40,
+  backgroundColor: "#4169e1",
+  marginTop: 10,
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: 10,
+},
+btncancelar: {
+  width: 120,
+  height: 40,
+  backgroundColor: "#FFC107",
+  marginTop: 10,
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: 10,
+},
+fixed: {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+},
+imgbackground: {
+  width: Dimensions.get("window").width, //for full screen
+  height: Dimensions.get("window").height, //for full screen
+  resizeMode:"cover",
+},
+keyboardContainer: {
+  flex: 1,
+  width: "100%",
+  height: "100%",
+},
+keyboardContentContainer: {
+  //flex:1,
+  alignItems: "center",
+  justifyContent: "center",
+},
   
 });

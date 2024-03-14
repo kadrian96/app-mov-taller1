@@ -1,7 +1,16 @@
 import { ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { useFonts } from 'expo-font';
 
 export default function OfflineScreen({ navigation }:any) {
+  //Importar fonts
+  const [fontsLoaded] = useFonts({
+    'pixel': require('../assets/fonts/pixel.ttf'),
+  });
+
+  if(!fontsLoaded){
+    return null;
+  }
   return (
     <ImageBackground source={require('../assets/image/fondo-offline.jpg')}style={styles.container}>
       <Text style={styles.titulo}>CREA UNA CUENTA O INICIA SESION</Text>
@@ -23,9 +32,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
       },
     titulo: {
-        marginTop: 160,
-        fontSize: 25,
-        fontWeight: "bold",
+        marginTop: 185,
+        fontSize: 20,
+        fontFamily:'pixel',
         color: "#922B3E",
         textAlign: "center",
         marginBottom: 30,

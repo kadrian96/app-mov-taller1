@@ -9,6 +9,8 @@ import {
   TextInput,
   View,
   Modal,
+  ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, { useState } from "react";
@@ -24,6 +26,9 @@ import {
 } from "firebase/storage";
 import { storage } from "../config/Config";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFonts } from "expo-font";
+import { ResizeMode } from "expo-av";
+
 
 export default function RegistroScreen({ navigation }: any) {
   const [nombre, setNombre] = useState("");
@@ -33,7 +38,16 @@ export default function RegistroScreen({ navigation }: any) {
   const [nick, setNick] = useState("");
   const [edad, setEdad] = useState("");
   const [imagen, setImagen] = useState(" ");
-  
+  const [loading, setLoading] = useState(false);
+
+  //Importar fonts
+  const [fontsLoaded] = useFonts({
+    pixel: require("../assets/fonts/pixel.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -70,7 +84,6 @@ export default function RegistroScreen({ navigation }: any) {
         //subir la imagen al storage
         const storageRef = reff(storage, "usuarios/" + nick); //se puede coloccar una carpeta para subir el archivo
         try {
-      
           const response = await fetch(imagen);
           const blob = await response.blob();
           await uploadBytes(storageRef, blob, {
@@ -83,16 +96,15 @@ export default function RegistroScreen({ navigation }: any) {
           // subir el link de la imagen al profile del usuario
           await updateProfile(user, {
             photoURL: imageUrl,
-            displayName: nick
+            displayName: nick,
           });
-        } catch (error:any) {
+        } catch (error: any) {
           console.error(error.message);
         }
       }
 
       // Navegando a la pantalla de bienvenida
       navigation.navigate("Bienvenido");
-
     } catch (error: any) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -110,7 +122,7 @@ export default function RegistroScreen({ navigation }: any) {
           break;
         default:
           Alert.alert(errorCode, errorMessage);
-          console.error(error)
+          console.error(error);
           break;
       }
     }
@@ -129,7 +141,7 @@ export default function RegistroScreen({ navigation }: any) {
       });
 
       console.log("La imagen se subió con éxito");
-      Alert.alert('Mensaje','La imagen se subio correctamente')
+      Alert.alert("Mensaje", "La imagen se subio correctamente");
       // Obtiene la URL de la imagen
       const imageURL = await getDownloadURL(storageRef);
       console.log("URL de desacarga de la imagen", imageURL);
@@ -151,7 +163,7 @@ export default function RegistroScreen({ navigation }: any) {
     ) {
       Alert.alert(
         "Error de Validación ",
-        "Por favor verifique los campos no esten vacios."
+        "Por favor verifique que los campos no esten vacios."
       );
       return;
     } else {
@@ -175,6 +187,7 @@ export default function RegistroScreen({ navigation }: any) {
     nick: string,
     edad: string
   ) {
+    setLoading(true);
     set(ref(db, "usuarios/" + nick), {
       name: nombre,
       lastName: apellido,
@@ -188,115 +201,154 @@ export default function RegistroScreen({ navigation }: any) {
         console.error("Error al guardar en la base de datos:", error);
         Alert.alert("Error", "Hubo un problema al guardar los datos");
       });
+    setLoading(false);
   }
 
   return (
+    <View style={styles.container}>
     <ImageBackground
       source={require("../assets/image/fondo-bienv2.jpg")}
-      style={styles.container}
-    >
-      
-        <SafeAreaView style={styles.mainContainer}>
-          <KeyboardAwareScrollView
-            style={styles.keyboardContainer}
-            contentContainerStyle={styles.keyboardContentContainer}
-            
-          >
-            
-              <View style={styles.modalView}>
-                <Text style={styles.titulo}>Registrate</Text>
+      style={[styles.imgbackground, styles.fixed, { zIndex: -1 }]}
+    ></ImageBackground>
+      <SafeAreaView style={styles.mainContainer}>
+        <KeyboardAwareScrollView
+          style={styles.keyboardContainer}
+          contentContainerStyle={styles.keyboardContentContainer}
+        >
+          <View style={styles.modalView}>
+            <ImageBackground
+              source={require("../assets/image/fondo-bienv2.jpg")}
+              style={styles.imgmodal}
+              blurRadius={30}
+              imageStyle={{opacity:0.6}}
+              
+            >
+              <Text style={styles.titulo}>Registrate</Text>
 
-                <TouchableOpacity onPress={pickImage} style={styles.boton}>
-                  <Text style={styles.textoBoton}>
-                    sube una imagen de perfil
-                  </Text>
-                </TouchableOpacity>
+              <TouchableOpacity onPress={pickImage} style={styles.boton}>
+                <Text style={styles.textoBoton}>sube una imagen de perfil</Text>
+              </TouchableOpacity>
 
-                {imagen && (
-                  <View>
-                    <Image source={{ uri: imagen }} style={styles.imagen} />
-                  </View>
-                )}
+              {imagen && (
+                <View>
+                  <Image source={{ uri: imagen }} style={styles.imagen} />
+                </View>
+              )}
 
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ingresar Nombre"
-                  onChangeText={(texto) => setNombre(texto)}
-                  value={nombre}
-                />
+              <TextInput
+                style={styles.input}
+                placeholder="Ingresar Nombre"
+                onChangeText={(texto) => setNombre(texto)}
+                value={nombre}
+              />
 
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ingresar Apellido"
-                  onChangeText={(texto) => setApellido(texto)}
-                  value={apellido}
-                />
+              <TextInput
+                style={styles.input}
+                placeholder="Ingresar Apellido"
+                onChangeText={(texto) => setApellido(texto)}
+                value={apellido}
+              />
 
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ingrese el Nick"
-                  onChangeText={(texto) => setNick(texto)}
-                  value={nick}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ingresar La Edad"
-                  onChangeText={(texto) => setEdad(texto)}
-                  keyboardType="numeric"
-                  value={edad}
-                />
+              <TextInput
+                style={styles.input}
+                placeholder="Ingrese el Nick"
+                onChangeText={(texto) => setNick(texto)}
+                autoCapitalize="none"
+                value={nick}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Ingresar La Edad"
+                onChangeText={(texto) => setEdad(texto)}
+                keyboardType="numeric"
+                value={edad}
+              />
 
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ingresar Correo"
-                  keyboardType="email-address"
-                  onChangeText={(texto) => setCorreo(texto)}
-                  autoCapitalize="none"
-                  value={correo}
-                />
+              <TextInput
+                style={styles.input}
+                placeholder="Ingresar Correo"
+                keyboardType="email-address"
+                onChangeText={(texto) => setCorreo(texto)}
+                autoCapitalize="none"
+                value={correo}
+              />
 
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ingresar Contraseña"
-                  secureTextEntry
-                  onChangeText={(texto) => setContrasenia(texto)}
-                  value={contrasenia}
-                />
-                
-                <Text >¿Ya tienes cuenta? <Text style={{textDecorationLine:'underline', color:'blue'}} onPress={()=>navigation.navigate('Login')}>Inicia Sesion</Text></Text>
-                <View style={{ height: 40, width: "100%" }} />
-                <Button
-                  title="Registrarse"
-                  onPress={() => RegistroValidacion() }   
-                  color="green"
-                />
-              </View>
-            
-          </KeyboardAwareScrollView>
-        </SafeAreaView>
-      
-    </ImageBackground>
+              <TextInput
+                style={styles.input}
+                placeholder="Ingresar Contraseña"
+                secureTextEntry
+                onChangeText={(texto) => setContrasenia(texto)}
+                value={contrasenia}
+              />
+
+              <Text
+              style={{fontSize:16, fontWeight:'500', marginTop:10}}>
+                ¿Ya tienes cuenta?{" "}
+                <Text
+                  style={{ textDecorationLine: "underline", color: "blue", fontSize:16}}
+                  onPress={() => navigation.navigate("Login")}
+                >
+                  Inicia Sesion
+                </Text>
+              </Text>
+              <View style={{ height: 30, width: "100%" }} />
+              <Button
+                title="Registrarse"
+                onPress={() => RegistroValidacion()}
+                color="green"
+              />
+            </ImageBackground>
+          </View>
+        </KeyboardAwareScrollView>
+      </SafeAreaView>
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
+    
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject, // Esto hace que el contenedor ocupe toda la pantalla
+    backgroundColor: "rgba(255, 255, 255, 0.7)", // Fondo semi-transparente
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     resizeMode: "cover",
     alignItems: "center",
   },
+  imgbackground: {
+    width: Dimensions.get("screen").width, //for full screen
+    height: Dimensions.get("screen").height, //for full screen
+    resizeMode: "cover",
+  },
+  fixed: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
   titulo: {
     marginTop: 30,
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "pixel",
     color: "#C41E3A",
     textAlign: "center",
+    marginBottom: 5,
   },
   boton: {
     backgroundColor: "#C41E3A",
     padding: 10,
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 5,
   },
   textoBoton: {
     color: "white",
@@ -307,7 +359,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 10,
-    marginTop: 20,
+    marginVertical: 15,
   },
   centeredView: {
     flex: 1,
@@ -321,8 +373,9 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "white",
     borderRadius: 10,
-    padding: 20,
+    //padding: 20,
     alignItems: "center",
+    overflow:'hidden'
   },
   input: {
     height: 40,
@@ -335,7 +388,8 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    marginVertical: 50,
+    marginTop:50,
+    //marginBottom: 10,
     justifyContent: "center",
   },
 
@@ -346,5 +400,12 @@ const styles = StyleSheet.create({
     //flex:1,
 
     justifyContent: "center",
+  },
+  imgmodal: {
+    flex: 1,
+    resizeMode: "cover",
+    alignItems: "center",
+    padding:20,
+    
   },
 });

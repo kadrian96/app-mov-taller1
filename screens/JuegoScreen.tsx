@@ -15,6 +15,9 @@ import { Audio } from 'expo-av';
 import { ref, set } from "firebase/database";
 import { auth, db } from "../config/Config";
 import { onAuthStateChanged } from "firebase/auth";
+import { Icon } from "@rneui/base";
+import { useFonts } from 'expo-font';
+
 
 
 
@@ -51,6 +54,7 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
   const [viewDimensions, setViewDimensions] = useState({ width: 0, height: 0 });
   const [altura, setaltura] = useState("");
   const [gameActive, setGameActive] = useState(true);
+  const [isPaused, setisPaused] = useState(false);
   const [nick, setnick] = useState("");
   const [logged, setlogged] = useState(false);
   const [insectoimg, setInsectoimg] = useState(()=>{
@@ -128,15 +132,26 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
     setaltura(y);
   };
 
+
+  //CARGAR LA MUSICA AL INICIO DEL JUEGO
+  useEffect(() => {
+    if (gameOver) {
+      return; // para la carga de la musica
+    }
+     // Carga la música de fondo al cargar el componente
+     loadBackgroundMusic();
+   
+  }, [gameOver])
+  
+
   //LOGICA DEL JUEGO
   useEffect(() => {
     usuarioActual();
     // Generar objetos aleatorios cada segundo
-    if (!gameActive) {
+    
+    if (!gameActive || isPaused) {
         return; // No generar más objetos si el juego no está activo
       }
-         // Carga la música de fondo al cargar el componente
-        loadBackgroundMusic();
 
         const intervalId = setInterval(() => {
             setObjects((prevObjects) => [
@@ -162,7 +177,7 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
           };
     
    
-  }, [gameActive]);
+  }, [gameActive,isPaused]);
 
   //console.log(objects);
 
@@ -302,6 +317,15 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
     }
   }
 
+   //Importar fonts
+   const [fontsLoaded] = useFonts({
+    'pixel': require('../assets/fonts/pixel.ttf'),
+  });
+
+  if(!fontsLoaded){
+    return null;
+  }
+
   return (
     <ImageBackground
       source={map}
@@ -310,6 +334,21 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
       <View style={styles.textocontain}>
         <Text style={styles.texto}>Score: <Text style={{color:'black'}}>{score}</Text> </Text>
         <Text style={styles.texto}>Tiempo: <Text style={{color:'black'}}>{time}</Text> </Text>
+        
+        {!isPaused && (
+          <Pressable style={styles.btnpause} onPress={() => (setisPaused(!isPaused),pauseBackgroundMusic())}>
+          <Icon name='pause' type="material" color={'#F1C40F'}/>
+        </Pressable>
+        )}
+         {isPaused && (
+          <Pressable style={styles.btnplay} onPress={() => (setisPaused(!isPaused),playBackgroundMusic())}>
+          <Icon name="play-arrow" type="material" color={'#27AE60'}/>
+        </Pressable>
+        )}
+        <Pressable style={styles.btnupsalir} onPress={() => (navigation.navigate('Bienvenido'))}>
+        <Icon name='stop' type="material" color={'#E74C3C'}/>
+        </Pressable>
+       
       </View>
       <View style={styles.gamewindow} onLayout={onLayout}>
         {objects.map((obj) => (
@@ -327,7 +366,7 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
         {gameOver && (
           <Modal animationType="slide" transparent={true}>
             <View style={styles.centeredView}>
-              <View style={styles.modalView}>
+              <ImageBackground source={require('../assets/image/modal-gameover6.jpg')} style={styles.modalView}>
                 <Text style={styles.gameovertxt}>Game Over!</Text>
                 <Text style={styles.puntuaciontxt}>Tu puntuacion es: {score}</Text>
                 <View style={styles.containbtn}>
@@ -341,9 +380,18 @@ const jardinimg = require('../assets/image/fondo-jardin.jpg');
                     
                 </View>
                 
-              </View>
+              </ImageBackground>
             </View>
           </Modal>
+        )}
+        {isPaused &&(
+           
+           <View style={styles.pausedmodal}>
+             <View style={styles.pausedView}>
+               <Text style={styles.txtpausa}>Pause!</Text>
+             </View>
+           </View>
+         
         )}
       </View>
     </ImageBackground>
@@ -356,17 +404,55 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   textocontain: {
+    top:50,
     width: "100%",
     height: 50,
-    backgroundColor: "#B2BEB5",
-    alignItems: "center",
+    backgroundColor: "#7FB3D5",
     flexDirection: "row",
-    alignContent: "center",
-    paddingHorizontal: 40,
+    justifyContent:"space-evenly",
+    alignItems:"center"
+    /*paddingHorizontal: 40,*/
+    //#B2BEB5
   },
+  btnupsalir:{
+    width:35,
+    height:35,
+    backgroundColor:'#34495E',
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:50,
+    borderWidth:3,
+    borderColor:'#E74C3C'
+    //#B03A2E
+  },
+  btnpause:{
+    width:35,
+    height:35,
+    backgroundColor:'#34495E',
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:50,
+    borderWidth:3,
+    borderColor:'#F1C40F'
+    //#B7950B
+
+
+  },
+  btnplay:{
+    width:35,
+    height:35,
+    backgroundColor:'#34495E',
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:50,
+    borderWidth:3,
+    borderColor:'#27AE60'
+    //#1E8449
+  },
+
   texto: {
-    textAlign: "center",
-    marginHorizontal: 20,
+    /*textAlign: "center",*/
+    /*marginHorizontal: 20,*/
     fontSize: 20,
     color: "#E52B50",
     fontWeight: "bold",
@@ -377,8 +463,9 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   gamewindow: {
+    top:50,
     width: "100%",
-    height: 650,
+    height: "100%",
   },
   element: {
     width: 50,
@@ -394,23 +481,29 @@ const styles = StyleSheet.create({
   modalView: {
     height:250,
     width:250,
-    backgroundColor: "white",
+    overflow:'hidden',
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
     
   },
   gameovertxt:{
-    color:'red',
+    color:'#F7A708',
     marginVertical:10,
     fontSize:25,
-    fontWeight:'bold'
+    fontFamily:'pixel',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -2, height: 2 },
+    textShadowRadius: 12
   },
   puntuaciontxt:{
-    color:'blue',
+    color:'#BA4A00',
     marginVertical:10,
     fontSize:20,
-    fontWeight:'bold'
+    fontWeight:'bold',
+    textShadowColor: '#7F8C8D',
+    textShadowOffset: { width: -0.5, height: 1 },
+    textShadowRadius: 8
   },
   containbtn:{
 
@@ -420,11 +513,19 @@ const styles = StyleSheet.create({
   btnreinicio:{
     width:100,
     height:50,
-    backgroundColor:'blue',
+    backgroundColor:'#3498DB',
     marginVertical:5,
     alignItems:'center',
     justifyContent:'center',
-    borderRadius:10
+    borderRadius:10,
+    borderRightWidth: 1,
+    borderLeftWidth:1,
+    borderBottomWidth: 5,
+    shadowOffset:{ width: 1, height: 13 },
+    shadowColor:'black',
+    shadowRadius:15,
+    shadowOpacity: 1,
+    elevation: 10
   },
   btnsalir:{
     width:100,
@@ -433,12 +534,40 @@ const styles = StyleSheet.create({
     marginVertical:5,
     alignItems:'center',
     justifyContent:'center',
-    borderRadius:10
+    borderRadius:10,
+    borderRightWidth: 1,
+    borderLeftWidth:1,
+    borderBottomWidth: 5,
+    shadowOffset:{ width: 1, height: 13 },
+    shadowColor:'black',
+    shadowRadius:15,
+    shadowOpacity: 1,
+    elevation: 10
   },
   textbtn:{
     color:'white',
     fontWeight:'bold',
     fontSize:15
+  },
+  pausedmodal: {
+    width:'100%',
+    height:'100%',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+  pausedView: {
+    height:'100%',
+    width:'100%',
+    backgroundColor: "",
+    alignItems: "center",
+    /*justifyContent: "center",*/
+  },
+  txtpausa:{
+    marginTop:320,
+    fontSize:30,
+    color:'#0064d3',
+    fontFamily:'pixel'
   }
 
 });

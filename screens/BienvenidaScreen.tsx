@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { get, onValue, ref } from 'firebase/database';
 import { auth, db } from '../config/Config';
 import { onAuthStateChanged } from 'firebase/auth';
-
+import { useFonts } from 'expo-font';
 
 export default function BienvenidaScreen({ navigation }: any) {
   //const insecto=['hormiga','abeja','araña','cucaracha','escarabajo']
@@ -81,6 +81,15 @@ export default function BienvenidaScreen({ navigation }: any) {
 
     leer();
   }, []); 
+
+  //Importar fonts
+  const [fontsLoaded] = useFonts({
+    'pixel': require('../assets/fonts/pixel.ttf'),
+  });
+
+  if(!fontsLoaded){
+    return null;
+  }
 
   type puntuacion = {
     id: any;
@@ -165,7 +174,9 @@ export default function BienvenidaScreen({ navigation }: any) {
       
         <Text></Text>
         <Text></Text>
-        <Button title='Puntuaciones' onPress={() => setscoreview(true)} color='#db4437' />
+        <TouchableOpacity style={styles.btnscore} onPress={() => setscoreview(true)}>
+                  <Text style={styles.textbtn}>Puntuaciones</Text>
+        </TouchableOpacity>
       </View>
       
 
@@ -175,7 +186,7 @@ export default function BienvenidaScreen({ navigation }: any) {
       {levelview && (
         <Modal animationType="slide" transparent={true}>
           <View style={styles.centeredView}>
-            <View style={styles.modalView}>
+            <ImageBackground source={require('../assets/image/modal-game1.jpg')} style={styles.modalView}>
               <Text style={styles.leveltitle}>Escoje la dificultad:</Text>
               <View style={styles.containbtn}>
 
@@ -188,11 +199,14 @@ export default function BienvenidaScreen({ navigation }: any) {
                 <Pressable style={[styles.levelbtn, { backgroundColor: '#DE3163', marginBottom: 30 }]} onPress={() => (setmapview(true),setdificultad("dificil"))} >
                   <Text style={styles.textbtn}>Dificil</Text>
                 </Pressable>
-                <Button title='Volver' onPress={() => setlevelview(false)} />
+                <Pressable style={styles.btnback} onPress={() => setlevelview(false)}>
+                  <Text style={styles.textbtn}>Regresar</Text>
+                </Pressable>
+                
 
               </View>
 
-            </View>
+            </ImageBackground>
           </View>
         </Modal>
       )}
@@ -202,42 +216,56 @@ export default function BienvenidaScreen({ navigation }: any) {
 {mapview && (
         <Modal animationType="slide" transparent={true}>
           <View style={styles.centeredView}>
-            <View style={styles.modalmapView}>
+            <ImageBackground source={require('../assets/image/modal-game2.jpg')} style={styles.modalmapView} imageStyle={{opacity:0.8}}>
               <Text style={styles.maptitle}>Escoje el mapa:</Text>
               <View >
-
                 <Pressable style={styles.mapbtn} onPress={() => (asignarValores("hormiguero"))}>
                   <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-hormiguero.jpg")}>
-                        <Text style={styles.textmapbtn}>Hormiguero</Text>
+                    <View style={styles.overlay}>
+                      <Text style={styles.textmapbtn}>Hormiguero</Text>
+                    </View>
                   </ImageBackground>
-                  
                 </Pressable>
                 <Pressable style={styles.mapbtn} onPress={() => (asignarValores("panal"))} >
                   <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-panal2.jpg")}>
-                        <Text style={styles.textmapbtn}>Panal</Text>
+                    <View style={styles.overlay}>
+                      <Text style={styles.textmapbtn}>Panal</Text>
+                    </View>
+                        
                   </ImageBackground>
                 </Pressable>
                 <Pressable style={styles.mapbtn} onPress={() => (asignarValores("telaraña"))} >
                   <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-telaraña3.jpg")}>
-                        <Text style={styles.textmapbtn}>Telaraña</Text>
+                    <View style={styles.overlay}>
+                      <Text style={styles.textmapbtn}>Telaraña</Text>
+                    </View>
+                        
                   </ImageBackground>
                 </Pressable>
                 <Pressable style={styles.mapbtn} onPress={() => (asignarValores("estanque"))} >
                   <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-estanque.jpg")}>
-                        <Text style={styles.textmapbtn}>Estanque</Text>
+                    <View style={styles.overlay}>
+                      <Text style={styles.textmapbtn}>Estanque</Text>
+                    </View>
+                        
                   </ImageBackground>
                 </Pressable>
                 <Pressable style={[styles.mapbtn, {marginBottom:15}]} onPress={() => (asignarValores("jardin"))} >
                   <ImageBackground style={styles.mapimg} source={require("../assets/image/fondo-jardin.jpg")}>
-                        <Text style={styles.textmapbtn}>Jardin</Text>
+                    <View style={styles.overlay}>
+                      <Text style={styles.textmapbtn}>Jardin</Text>
+                    </View>
+                        
                   </ImageBackground>
                 </Pressable>
-
-                <Button title='Volver' onPress={() => (setmapview(false),setlevelview(false))} />
+                
 
               </View>
+              <Pressable style={styles.btnback} onPress={() => (setmapview(false),setlevelview(false))}>
+                  <Text style={styles.textbtn}>Regresar</Text>
+                </Pressable>
 
-            </View>
+            </ImageBackground>
           </View>
         </Modal>
       )}
@@ -247,8 +275,8 @@ export default function BienvenidaScreen({ navigation }: any) {
 {scoreview && (
         <Modal animationType="slide" transparent={true}>
           <View style={styles.centeredView}>
-            <View style={styles.modalmapView}>
-              <Text style={styles.maptitle}>Top 10 score:</Text>
+            <ImageBackground source={require("../assets/image/modal-score1.jpg")} style={styles.modalmapView}>
+              <Text style={styles.scoretitle}>Top 10 score:</Text>
               <View style={styles.flat1}>
               <FlatList
                 data={toptenDatos}
@@ -262,12 +290,13 @@ export default function BienvenidaScreen({ navigation }: any) {
           style={styles.lista}
         />
 
-
-                <Button title='Volver' onPress={() => setscoreview(false)} />
-
+                
               </View>
+              <Pressable style={styles.btnback} onPress={() => setscoreview(false)}>
+                  <Text style={styles.textbtn}>Regresar</Text>
+                </Pressable>
 
-            </View>
+            </ImageBackground>
           </View>
         </Modal>
       )}
@@ -290,11 +319,11 @@ const styles = StyleSheet.create({
     //flex:0.4,
     marginTop: 20,
     fontSize: 25,
-    fontWeight: "bold",
     color: "#FF0800",
     textAlign: 'center',
     marginBottom: 10,
-    paddingHorizontal:40
+    paddingHorizontal:40,
+    fontFamily:'pixel'
 
   },
 
@@ -330,10 +359,11 @@ const styles = StyleSheet.create({
   modalView: {
     height: 400,
     width: 300,
-    backgroundColor: "white",
-    borderRadius: 10,
+    //backgroundColor: "white",
+    borderRadius: 20,
     padding: 20,
     alignItems: "center",
+    overflow: 'hidden'
 
   },
   containbtn: {
@@ -352,31 +382,41 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10
+    borderRadius: 10,
+    borderRightWidth: 1,
+    borderLeftWidth:1,
+    borderBottomWidth: 5,
+    shadowOffset:{ width: 1, height: 13 },
+    shadowColor:'black',
+    shadowRadius:15,
+    shadowOpacity: 1,
+    elevation: 10
   },
   leveltitle: {
-    marginTop: 30,
+    marginTop: 10,
     fontSize: 25,
-    fontWeight: "bold",
-    color: "#D2691E",
+    fontFamily:'pixel',
+    color: "#FF9800",
     textAlign: 'center',
-    marginBottom: 20
+    marginBottom: 30
+    //#D2691E
   },
   mapimg:{
     height:100,
     width:200,
     resizeMode:'contain',
-    opacity:0.5,
+    //opacity:0.5,
     justifyContent:'center',
     alignItems: "center"
   },
   modalmapView: {
     height: 720,
     width: 350,
-    backgroundColor: "white",
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
+    overflow:'hidden',
+  
 
   },
   mapbtn: {
@@ -388,38 +428,21 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   textmapbtn: {
-    fontWeight: 'bold',
+    fontWeight:'bold',
+    color:'white',
     fontSize: 20,
     opacity:1
   },
   maptitle: {
     marginTop: 30,
     fontSize: 25,
-    fontWeight: "bold",
+    fontFamily:'pixel',
     color: "#D2691E",
     textAlign: 'center',
     marginBottom: 10
   },
-  img2: {
-    width: 30, // Ajusta el tamaño de la imagen según sea necesario
-    height: 30, // Ajusta el tamaño de la imagen según sea necesario
-    marginBottom: 10,
-    marginTop:20,
-    marginLeft:325
-   
-  },
-  btn2: {
-   // position:'absolute',
-  top: 50,
-  left: 150,
-  zIndex: 1, // Asegura que el btn2 esté en la capa superior
-  width: 150,
-  height: 150,
-  alignItems: 'center',
-  justifyContent: 'center', // Centra el texto verticalmente
-  backgroundColor: 'rgb(89,166,98)',
-  borderRadius: 500,
-  },
+  
+  
   textbutton1: {
     fontSize: 18,
     color: '#002387',
@@ -428,18 +451,20 @@ const styles = StyleSheet.create({
     left:15
   },
   separator: {
-    height: 1,
-    backgroundColor: 'gray',
-    marginTop:5
+    height: 0.5,
+    backgroundColor: 'white',
+    marginTop:5,
+    borderWidth:0.5,
+    borderColor:'white'
   },
   keytext:{
-    color:'#00AB66',
+    color:'#FFEE58',
     fontWeight:'bold',
     fontStyle:'italic'
 
   },
   valuetext:{
-    color:'black',
+    color:'white',
     fontWeight:'normal',
     fontStyle:'normal'
   },
@@ -479,7 +504,41 @@ const styles = StyleSheet.create({
     height:90,
     //backgroundColor:'#C0448F'
 
-  }
+  },
+  overlay: {
+    height:'100%',
+    width:'100%',
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor:'rgba(0,0,0,0.4)'
+},
+scoretitle: {
+  marginTop: 55,
+  fontSize: 25,
+  fontFamily:'pixel',
+  color: "#F39C12",
+  textAlign: 'center',
+  marginBottom: 5
+},
+btnback: {
+  paddingVertical:5,
+  paddingHorizontal:15,
+  marginVertical: 5,
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 5,
+  backgroundColor:'#00a4ef'
+},
+btnscore: {
+  paddingVertical:7,
+  paddingHorizontal:15,
+  marginVertical: 5,
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 5,
+  backgroundColor:'#64B5F6'
+},
+
 
 
 })
