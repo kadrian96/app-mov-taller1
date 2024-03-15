@@ -1,4 +1,3 @@
-
 import { Button, ImageBackground, Modal, Pressable, StyleSheet, Text, View, Image } from 'react-native';
 import React, { useEffect, useState } from 'react'
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
@@ -19,19 +18,26 @@ export default function BienvenidaScreen({ navigation }: any) {
   const [logged, setlogged] = useState(false);
   const [nick, setnick] = useState("");
   const [userimg, setuserimg] = useState("https://t4.ftcdn.net/jpg/05/10/14/15/240_F_510141519_evdfo5bdjlaMmrlyCCMzcO4LID6doX6W.jpg");
-  
+  let focusListener:any = null;
  
   
   // OBTENER DATOS USUARIO
 
   useEffect(() => {
+
+    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (user!=null) {
         const displayName:any = user.displayName;
-        const photoURL:any = user.photoURL;
         setnick(displayName);
-        setuserimg(photoURL);
         setlogged(true)
+        if(user.photoURL==null){
+          setuserimg("https://cdn-icons-png.flaticon.com/512/12595/12595885.png");
+        }else{
+          const photoURL:any = user.photoURL;
+          setuserimg(photoURL);
+        }
+
         //console.log("Este es el nick: ", nick)
       } else {
         // User is signed out
@@ -39,10 +45,25 @@ export default function BienvenidaScreen({ navigation }: any) {
         setlogged(false)
       }
     });
+
+    focusListener = navigation.addListener('focus', () => {
+      const user = auth.currentUser;
+    if (user!=null) {
+      //console.log('actualizando')
+      if(user.photoURL==null){
+        setuserimg("https://cdn-icons-png.flaticon.com/512/12595/12595885.png");
+      }else{
+        const photoURL:any = user.photoURL;
+        setuserimg(photoURL);
+      }
+    }
+      
+  });
   
     return () => {
       // Desuscribe la función cuando el componente se desmonta
       unsubscribe();
+      
     };
   }, []); 
   

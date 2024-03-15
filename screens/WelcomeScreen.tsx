@@ -42,7 +42,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center', // Centra los elementos horizontalmente
-    marginTop: 500,
+    position: 'absolute',
+    bottom: 50,
+    left: 0,
+    right: 0,
   },
   btn: {
     width: 105,

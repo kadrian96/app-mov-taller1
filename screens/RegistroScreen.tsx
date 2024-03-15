@@ -80,7 +80,7 @@ export default function RegistroScreen({ navigation }: any) {
       // Llamando a la función para guardar en la base de datos
       guardar(nombre, apellido, correo, nick, edad);
       // agregar la imagen de perfil de usuario si es que la hay
-      if (imagen) {
+      if (imagen!=" ") {
         //subir la imagen al storage
         const storageRef = reff(storage, "usuarios/" + nick); //se puede coloccar una carpeta para subir el archivo
         try {
@@ -96,12 +96,14 @@ export default function RegistroScreen({ navigation }: any) {
           // subir el link de la imagen al profile del usuario
           await updateProfile(user, {
             photoURL: imageUrl,
-            displayName: nick,
           });
         } catch (error: any) {
           console.error(error.message);
         }
       }
+      await updateProfile(user, {
+        displayName: nick,
+      });
 
       // Navegando a la pantalla de bienvenida
       navigation.navigate("Bienvenido");
